@@ -76,7 +76,7 @@ class FTP extends FlysystemBase
 			'host' => $this->config['host'], 
 			'root' => $this->config['path'], 
 			'username' => $this->config['user'], 
-			'password' => $this->config['password'], 
+			'password' => htmlspecialchars_decode($this->config['password'], ENT_QUOTES),
 			'port' => (int) $this->config['port'], 
 			'ssl' => (isset($this->config['usetls']) && $this->config['usetls'] === 'yes'),
 			'timeout' => (isset($this->config['timeout']) && !empty($this->config['timeout'])) ? (int) $this->config['timeout'] : 30,
