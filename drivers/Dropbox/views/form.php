@@ -1,6 +1,7 @@
 <?php
 $disabled = (isset($readonly) && !empty($readonly))?' disabled ':'';
 $id = isset($_GET['id'])?$_GET['id']:'';
+include 'modal.testconnection.php';
 ?>
 <div class="container-fluid">
 	<h1><?php echo _('Dropbox Directory')?></h1>
@@ -133,6 +134,14 @@ $id = isset($_GET['id'])?$_GET['id']:'';
 								</div>
 							</div>
 							<!--END Path-->
+							<br />
+							<div class="element-container">
+								<div class="row">
+									<div class="col-md-12">
+										<button type='button' class='btn btn-default pull-right' id='testconn'><?php echo _("Test Connection Settings"); ?></button>
+									</div>
+								</div>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -159,5 +168,67 @@ $('#server_form').on('submit', function(e) {
 		warnInvalid($("#host"),_("Invalid description"));
 		return false;
 	}
+});
+function testconn() {
+	var req = {
+		module: 'filestore',
+		command: 'testconnection',
+		driver: "Dropbox",
+		token: $('#token').val(),
+		path: $('#path').val(),
+	};
+	$.ajax({
+		url: FreePBX.ajaxurl,
+		data: req,
+		success:function(data){
+			if(data.message == "Connect failed") {
+				$('#dropboxapiconnection').text("Connection to the Dropbox API failed. Please check network settings and that no firewall is blocking access");
+				$('#dropboxtoken').text("Aborted");
+				$('#dropboxpath').text("Aborted");
+			}
+			else if(data.message == "Token expired") {
+				$('#dropboxapiconnection').text("OK");
+				$('#dropboxtoken').text("Token expired");
+				$('#dropboxpath').text("Aborted");
+			}
+			else if(data.message == "Ivalid Token") {
+				$('#dropboxapiconnection').text("OK");
+				$('#dropboxtoken').text("Invalid Token");
+				$('#dropboxpath').text("Aborted");
+			}
+			else if(data.message == "Path malformated") {
+				$('#dropboxapiconnection').text("OK");
+				$('#dropboxtoken').text("OK");
+				$('#dropboxpath').text("Invalid Path!");
+			}
+			else if(data.message == "Unknown error") {
+				$('#dropboxapiconnection').text("OK");
+				$('#dropboxtoken').text("Unknown error. Please review all settings (e.g. if this token has all needed permissions");
+				$('#dropboxpath').text("Aborted");
+			}
+			else {
+				$('#dropboxapiconnection').text("OK");
+				$('#dropboxtoken').text("OK");
+				$('#dropboxpath').text("OK");
+			}
+		},
+	});
+}
+
+$("#testconn").click(function(e) {
+	e.preventDefault();
+	$('#dropboxapiconnection').text("");
+	$('#dropboxtoken').text("");
+	$('#dropboxpath').text("");
+	$("#custmodal").modal('show');
+	testconn();
+});
+
+$('#testcon_close').click(function(e) {
+	e.preventDefault();
+	$('#dropboxapiconnection').text("");
+	$('#dropboxtoken').text("");
+	$('#dropboxpath').text("");
+	$("#custmodal").modal('hide');
 });
 </script>

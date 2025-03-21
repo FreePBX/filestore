@@ -155,6 +155,7 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
  {
      return match ($req) {
          'grid' => true,
+		 'testconnection' => true,
          default => false,
      };
  }
@@ -162,6 +163,26 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 		switch($_REQUEST['command']) {
 			case 'grid':
 				return $this->listItems($_REQUEST['driver'], true);
+			break;
+			case 'testconnection':
+				$result = "";
+				$driver = $_REQUEST['driver'];
+				include("drivers/$driver/testconnection.php");
+				if($driver == "FTP") {
+					if($_REQUEST['usesftp'] == "yes") {
+						$result = check_sftp_connect($_REQUEST['host'], $_REQUEST['port'], $_REQUEST['timeout'], $_REQUEST['user'], $_REQUEST['password'], $_REQUEST['path']);
+					}
+					else {
+						$result = check_ftp_connect($_REQUEST['host'], $_REQUEST['port'], $_REQUEST['timeout'], $_REQUEST['usetls'], $_REQUEST['user'], $_REQUEST['password'], $_REQUEST['path'], $_REQUEST['transfer']);
+					}
+				}
+				elseif($driver == "Dropbox") {
+					$result = check_dropbox_connection($_REQUEST['token'], $_REQUEST['path']);
+				}
+				elseif($driver == "SSH") {
+					$result = check_ssh_connect($_REQUEST['host'], $_REQUEST['port'], $_REQUEST['user'], $_REQUEST['key'], $_REQUEST['path']);
+				}
+				return $result;
 			break;
 		}
 	}

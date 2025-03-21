@@ -1,6 +1,7 @@
 <?php
 $disabled = (isset($readonly) && !empty($readonly)) ? ' disabled ' : '';
 $id = isset($_GET['id']) ? $_GET['id'] : '';
+include 'modal.testconnection.php';
 ?>
 <div class="container-fluid">
 	<h1><?php echo _('FTP Instance') ?></h1>
@@ -266,7 +267,16 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 								</div>
 							</div>
 							<!--END Path-->
+							<br />
+							<div class="element-container">
+								<div class="row">
+									<div class="col-md-12">
+										<button type='button' class='btn btn-default pull-right' id='testconn'><?php echo _("Test Connection Settings"); ?></button>
+									</div>
+								</div>
+							</div>
 						</form>
+						<br />
 						<br />
 					</div>
 				</div>
@@ -286,5 +296,78 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 			return false;
 		}
 		return true;
+	});
+
+	function testconn() {
+		var req = {
+			module: 'filestore',
+			command: 'testconnection',
+			driver: "FTP",
+			host: $('#host').val(),
+			port: $('#port').val(),
+			timeout: $('#timeout').val(),
+			usetls: $('input[name="usetls"]:checked').val(),
+			usesftp: $('input[name="usesftp"]:checked').val(),
+			user: $('#user').val(),
+			password: $('#password').val(),
+			path: $('#path').val(),
+			transfer: $('input[name="transfer"]:checked').val(),
+		};
+		$.ajax({
+			url: FreePBX.ajaxurl,
+			data: req,
+			success:function(data){
+				console.log(data);
+				if(data.message == "Connect failed") {
+					$('#ftpconnection').text("Connection failed! Please check hostname and port settings!");
+					$('#ftplogin').text("Aborted");
+					$('#ftpchdir').text("Aborted");
+					$('#ftpwrite').text("Aborted");
+				}
+				else if(data.message == "Login failed") {
+					$('#ftpconnection').text("OK");
+					$('#ftpchdir').text("Aborted");
+					$('#ftpwrite').text("Aborted");
+					$('#ftplogin').text("Login failed! Please verify username and password. If you activated TLS, also verify that the server support enryption.");
+				}
+				else if(data.message == "Chdir failed") {
+					$('#ftpconnection').text("OK");
+					$('#ftplogin').text("OK");
+					$('#ftpchdir').text("Entering the directory failed. Please verify the directory setting and the permissions on the server!");
+					$('#ftpwrite').text("Aborted");
+				}
+				else if(data.message == "Write failed") {
+					$('#ftpconnection').text("OK");
+					$('#ftplogin').text("OK");
+					$('#ftpchdir').text("OK");
+					$('#ftpwrite').text("Upload of a test-file failed! Please verify the permissions on the server!");
+				}
+				else {
+					$('#ftpconnection').text("OK");
+					$('#ftplogin').text("OK");
+					$('#ftpchdir').text("OK");
+					$('#ftpwrite').text("OK");
+				}
+			},
+		});
+	}
+
+	$("#testconn").click(function(e) {
+		e.preventDefault();
+		$('#ftpconnection').text("");
+		$('#ftplogin').text("");
+		$('#ftpchdir').text("");
+		$('#ftpwrite').text("");
+		$("#custmodal").modal('show');
+		testconn();
+	});
+
+	$('#testcon_close').click(function(e) {
+		e.preventDefault();
+		$('#ftpconnection').text("");
+		$('#ftplogin').text("");
+		$('#ftpchdir').text("");
+		$('#ftpwrite').text("");
+		$("#custmodal").modal('hide');
 	});
 </script>
