@@ -1,7 +1,7 @@
 <?php
 use Spatie\Dropbox\Client;
 use Spatie\FlysystemDropbox\DropboxAdapter;
-function check_dropbox_connection($token, $path) {
+function check_dropbox_connect($token, $path) {
 	//Check if the dropbox api is reachable
 	$curlInit = curl_init("https://api.dropboxapi.com");
 	curl_setopt($curlInit,CURLOPT_CONNECTTIMEOUT,10);

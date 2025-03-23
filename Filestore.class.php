@@ -177,7 +177,7 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 					}
 				}
 				elseif($driver == "Dropbox") {
-					$result = check_dropbox_connection($_REQUEST['token'], $_REQUEST['path']);
+					$result = check_dropbox_connect($_REQUEST['token'], $_REQUEST['path']);
 				}
 				elseif($driver == "SSH") {
 					$result = check_ssh_connect($_REQUEST['host'], $_REQUEST['port'], $_REQUEST['user'], $_REQUEST['key'], $_REQUEST['path']);
