@@ -169,6 +169,7 @@ $('#server_form').on('submit', function(e) {
 		return false;
 	}
 });
+
 function testconn() {
 	var req = {
 		module: 'filestore',

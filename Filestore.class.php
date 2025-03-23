@@ -166,7 +166,7 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 			break;
 			case 'testconnection':
 				$result = "";
-				$driver = $_REQUEST['driver'];
+				$driver = basename($_REQUEST['driver']);
 				include("drivers/$driver/testconnection.php");
 				if($driver == "FTP") {
 					if($_REQUEST['usesftp'] == "yes") {
