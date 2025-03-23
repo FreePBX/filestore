@@ -192,7 +192,7 @@ function testconn() {
 				$('#dropboxtoken').text("Token expired");
 				$('#dropboxpath').text("Aborted");
 			}
-			else if(data.message == "Ivalid Token") {
+			else if(data.message == "Invalid Token") {
 				$('#dropboxapiconnection').text("OK");
 				$('#dropboxtoken').text("Invalid Token");
 				$('#dropboxpath').text("Aborted");

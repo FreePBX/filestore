@@ -25,7 +25,7 @@ function check_dropbox_connection($token, $path) {
 				return "Token expired";
 			}
 			elseif(str_contains($error, 'invalid_access_token')) {
-				return "Ivalid Token";
+				return "Invalid Token";
 			}
 			elseif(str_contains($error, 'malformed_path')) {
 				return "Path malformated";
