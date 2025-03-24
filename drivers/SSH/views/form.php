@@ -1,6 +1,7 @@
 <?php
 $disabled = (isset($readonly) && !empty($readonly)) ? ' disabled ' : '';
 $id = isset($_GET['id']) ? $_GET['id'] : '';
+include 'modal.testconnection.php';
 ?>
 <div class="container-fluid">
 	<h1>
@@ -229,6 +230,14 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 								</div>
 							</div>
 							<!--END Path-->
+							<br />
+							<div class="element-container">
+								<div class="row">
+									<div class="col-md-12">
+										<button type='button' class='btn btn-default pull-right' id='testconn'><?php echo _("Test Connection Settings"); ?></button>
+									</div>
+								</div>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -236,6 +245,8 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 		</div>
 	</div>
 </div>
+<br />
+<br />
 <script type="text/javascript">
 	var immortal = <?php echo (isset($immortal) && !empty($immortal)) ? 'true' : 'false'; ?>;
 	$('#server_form').on('submit', function (e) {
@@ -245,5 +256,74 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 		} else {
 			return true;
 		}
+	});
+
+	function testconn() {
+		var req = {
+			module: 'filestore',
+			command: 'testconnection',
+			driver: "SSH",
+			host: $('#host').val(),
+			port: $('#port').val(),
+			user: $('#user').val(),
+			key: $('#key').val(),
+			path: $('#path').val(),
+		};
+		$.ajax({
+			url: FreePBX.ajaxurl,
+			data: req,
+			success:function(data){
+				console.log(data);
+				if(data.message == "Connect failed") {
+					$('#sshconnection').text("Connection failed! Please check hostname and port settings!");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Login failed") {
+					$('#sshconnection').text("OK");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+					$('#sshlogin').text("Login failed! Please verify username and that the specified key is athorized to connect to the host.");
+				}
+				else if(data.message == "Chdir failed") {
+					$('#sshconnection').text("OK");
+					$('#sshlogin').text("OK");
+					$('#sshchdir').text("Entering the directory failed. Please verify the directory setting and the permissions on the server!");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Write failed") {
+					$('#sshconnection').text("OK");
+						$('#sshlogin').text("OK");
+						$('#sshchdir').text("OK");
+					$('#sshwrite').text("Upload of a test-file failed! Please verify the permissions on the server!");
+				}
+				else {
+					$('#sshconnection').text("OK");
+					$('#sshlogin').text("OK");
+					$('#sshchdir').text("OK");
+					$('#sshwrite').text("OK");
+				}
+			},
+		});
+	}
+
+	$("#testconn").click(function(e) {
+		e.preventDefault();
+		$('#sshconnection').text("");
+		$('#sshlogin').text("");
+		$('#sshchdir').text("");
+		$('#sshwrite').text("");
+		$("#custmodal").modal('show');
+		testconn();
+	});
+
+	$('#testcon_close').click(function(e) {
+		e.preventDefault();
+                $('#sshconnection').text("");
+                $('#sshlogin').text("");
+                $('#sshchdir').text("");
+                $('#sshwrite').text("");
+                $("#custmodal").modal('hide');
 	});
 </script>
