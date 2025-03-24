@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-18 05:50-0500\n"
+"POT-Creation-Date: 2025-03-24 02:50-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,11 +46,11 @@ msgstr ""
 msgid "AWS hosting Region"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:8
+#: drivers/Dropbox/views/form.php:9
 msgid "Access Token Information"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:51
+#: drivers/Dropbox/views/form.php:52
 msgid "Account Name"
 msgstr ""
 
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: drivers/FTP/views/form.php:236
+#: drivers/FTP/views/form.php:237
 msgid "Active"
 msgstr ""
 
@@ -103,7 +103,7 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
-#: drivers/FTP/views/form.php:191
+#: drivers/FTP/views/form.php:192
 msgid "Auto"
 msgstr ""
 
@@ -113,6 +113,12 @@ msgstr ""
 
 #: drivers/S3/views/form.php:69
 msgid "Bucket Name"
+msgstr ""
+
+#: drivers/Dropbox/views/modal.testconnection.php:35
+#: drivers/FTP/views/modal.testconnection.php:42
+#: drivers/SSH/views/modal.testconnection.php:42
+msgid "Close"
 msgstr ""
 
 #: drivers/S3/views/form.php:211
@@ -140,17 +146,17 @@ msgstr ""
 msgid "Delete a existing FTP instance"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:75
+#: drivers/Dropbox/views/form.php:76
 #: drivers/Dropbox/views/grid.php:21
 #: drivers/Email/views/form.php:75
 #: drivers/Email/views/grid.php:21
-#: drivers/FTP/views/form.php:60
+#: drivers/FTP/views/form.php:61
 #: drivers/FTP/views/grid.php:21
 #: drivers/Local/views/form.php:84
 #: drivers/Local/views/grid.php:21
 #: drivers/S3/views/form.php:82
 #: drivers/S3/views/grid.php:21
-#: drivers/SSH/views/form.php:78
+#: drivers/SSH/views/form.php:79
 #: drivers/SSH/views/grid.php:21
 msgid "Description"
 msgstr ""
@@ -167,8 +173,8 @@ msgstr ""
 msgid "Description or notes for this File Store"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:87
-#: drivers/SSH/views/form.php:92
+#: drivers/Dropbox/views/form.php:88
+#: drivers/SSH/views/form.php:93
 msgid "Description or notes for this server"
 msgstr ""
 
@@ -177,7 +183,7 @@ msgid ""
 "Description or notes for this server. This will be used as the email subject."
 msgstr ""
 
-#: drivers/FTP/views/form.php:123
+#: drivers/FTP/views/form.php:124
 msgid "Does this connection use tls? Make sure the port is set correctly."
 msgstr ""
 
@@ -190,7 +196,7 @@ msgstr ""
 msgid "Dropbox Account"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:6
+#: drivers/Dropbox/views/form.php:7
 msgid "Dropbox Directory"
 msgstr ""
 
@@ -210,24 +216,24 @@ msgstr ""
 msgid "Email address where backups should be emailed to"
 msgstr ""
 
-#: drivers/FTP/views/form.php:148
+#: drivers/FTP/views/form.php:149
 msgid ""
 "Enable this option to use SFTP (Secure File Transfer Protocol), a secure "
 "method for transferring files that encrypts both commands and data. Ensure "
 "that the server supports SFTP for this connection."
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:24
+#: drivers/Dropbox/views/form.php:25
 #: drivers/Dropbox/views/grid.php:22
 #: drivers/Email/views/form.php:24
 #: drivers/Email/views/grid.php:22
-#: drivers/FTP/views/form.php:21
+#: drivers/FTP/views/form.php:22
 #: drivers/FTP/views/grid.php:22
 #: drivers/Local/views/form.php:33
 #: drivers/Local/views/grid.php:22
 #: drivers/S3/views/form.php:31
 #: drivers/S3/views/grid.php:22
-#: drivers/SSH/views/form.php:23
+#: drivers/SSH/views/form.php:24
 #: drivers/SSH/views/grid.php:22
 msgid "Enabled"
 msgstr ""
@@ -256,7 +262,7 @@ msgstr ""
 msgid "Enter the name for FTP connection"
 msgstr ""
 
-#: drivers/FTP/views/form.php:6
+#: drivers/FTP/views/form.php:7
 msgid "FTP Instance"
 msgstr ""
 
@@ -298,7 +304,7 @@ msgid ""
 "setup file system destinations that can be used in other modules"
 msgstr ""
 
-#: drivers/FTP/views/form.php:186
+#: drivers/FTP/views/form.php:187
 msgid "Filesystem Type"
 msgstr ""
 
@@ -324,8 +330,8 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: drivers/FTP/views/form.php:74
-#: drivers/SSH/views/form.php:105
+#: drivers/FTP/views/form.php:75
+#: drivers/SSH/views/form.php:106
 msgid "Hostname"
 msgstr ""
 
@@ -333,11 +339,11 @@ msgstr ""
 msgid "Hostname for FTP Host"
 msgstr ""
 
-#: drivers/SSH/views/form.php:119
+#: drivers/SSH/views/form.php:120
 msgid "IP address or FQDN of remote SSH server"
 msgstr ""
 
-#: drivers/FTP/views/form.php:84
+#: drivers/FTP/views/form.php:85
 msgid "IP address or FQDN of remote ftp host"
 msgstr ""
 
@@ -349,7 +355,7 @@ msgstr ""
 msgid "KB"
 msgstr ""
 
-#: drivers/SSH/views/form.php:186
+#: drivers/SSH/views/form.php:187
 msgid "Key"
 msgstr ""
 
@@ -391,7 +397,7 @@ msgstr ""
 msgid "Local Display Name"
 msgstr ""
 
-#: drivers/SSH/views/form.php:200
+#: drivers/SSH/views/form.php:201
 msgid "Location of ssh private key to be used when connecting to a host."
 msgstr ""
 
@@ -423,14 +429,14 @@ msgstr ""
 msgid "Name this email list"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:32
+#: drivers/Dropbox/views/form.php:33
 #: drivers/Email/views/form.php:32
-#: drivers/FTP/views/form.php:29
-#: drivers/FTP/views/form.php:116
-#: drivers/FTP/views/form.php:141
+#: drivers/FTP/views/form.php:30
+#: drivers/FTP/views/form.php:117
+#: drivers/FTP/views/form.php:142
 #: drivers/Local/views/form.php:41
 #: drivers/S3/views/form.php:39
-#: drivers/SSH/views/form.php:31
+#: drivers/SSH/views/form.php:32
 msgid "No"
 msgstr ""
 
@@ -439,19 +445,19 @@ msgstr ""
 msgid "No id supplied"
 msgstr ""
 
-#: drivers/FTP/views/form.php:238
+#: drivers/FTP/views/form.php:239
 msgid "Passive"
 msgstr ""
 
-#: drivers/FTP/views/form.php:172
+#: drivers/FTP/views/form.php:173
 msgid "Password"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:121
-#: drivers/FTP/views/form.php:211
+#: drivers/Dropbox/views/form.php:122
+#: drivers/FTP/views/form.php:212
 #: drivers/Local/views/form.php:108
 #: drivers/S3/views/form.php:181
-#: drivers/SSH/views/form.php:213
+#: drivers/SSH/views/form.php:214
 msgid "Path"
 msgstr ""
 
@@ -460,9 +466,9 @@ msgid "Path Name"
 msgstr ""
 
 #: Api/Gql/Filestore.php:328
-#: drivers/Dropbox/views/form.php:131
+#: drivers/Dropbox/views/form.php:132
 #: drivers/S3/views/form.php:191
-#: drivers/SSH/views/form.php:227
+#: drivers/SSH/views/form.php:228
 msgid "Path on remote server"
 msgstr ""
 
@@ -475,7 +481,7 @@ msgid ""
 "work, and will behave in unexpected ways."
 msgstr ""
 
-#: drivers/FTP/views/form.php:221
+#: drivers/FTP/views/form.php:222
 msgid ""
 "Path on remote server. This must be a COMPLETE PATH, starting with a / - for "
 "example, <tt>/home/backups/freepbx</tt>. A path without a leading slash will "
@@ -490,8 +496,8 @@ msgstr ""
 msgid "Paths supports parameter substitution such as the examples below"
 msgstr ""
 
-#: drivers/FTP/views/form.php:94
-#: drivers/SSH/views/form.php:132
+#: drivers/FTP/views/form.php:95
+#: drivers/SSH/views/form.php:133
 msgid "Port"
 msgstr ""
 
@@ -499,8 +505,8 @@ msgstr ""
 msgid "Provide the name for this File Store"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:63
-#: drivers/SSH/views/form.php:65
+#: drivers/Dropbox/views/form.php:64
+#: drivers/SSH/views/form.php:66
 msgid "Provide the name for this server"
 msgstr ""
 
@@ -508,7 +514,7 @@ msgstr ""
 msgid "Region provided in AWS"
 msgstr ""
 
-#: drivers/SSH/views/form.php:146
+#: drivers/SSH/views/form.php:147
 msgid "Remote SSH Port"
 msgstr ""
 
@@ -528,11 +534,11 @@ msgstr ""
 msgid "Returns the filestore name"
 msgstr ""
 
-#: drivers/SSH/views/form.php:7
+#: drivers/SSH/views/form.php:8
 msgid "SSH Server"
 msgstr ""
 
-#: drivers/SSH/views/form.php:173
+#: drivers/SSH/views/form.php:174
 msgid "SSH Username"
 msgstr ""
 
@@ -540,8 +546,8 @@ msgstr ""
 msgid "Server"
 msgstr ""
 
-#: drivers/FTP/views/form.php:46
-#: drivers/SSH/views/form.php:51
+#: drivers/FTP/views/form.php:47
+#: drivers/SSH/views/form.php:52
 msgid "Server Name"
 msgstr ""
 
@@ -617,7 +623,13 @@ msgstr ""
 msgid "Successfully deleted FTP instance"
 msgstr ""
 
-#: drivers/FTP/views/form.php:201
+#: drivers/Dropbox/views/form.php:141
+#: drivers/FTP/views/form.php:274
+#: drivers/SSH/views/form.php:237
+msgid "Test Connection Settings"
+msgstr ""
+
+#: drivers/FTP/views/form.php:202
 msgid "The FTP Server's file system type. If you are unsure set this to Auto"
 msgstr ""
 
@@ -638,17 +650,17 @@ msgid ""
 "than the max size are not sent."
 msgstr ""
 
-#: Filestore.class.php:349
+#: Filestore.class.php:370
 #, php-format
 msgid "The requested driver %s is disabled"
 msgstr ""
 
-#: Filestore.class.php:345
+#: Filestore.class.php:366
 #, php-format
 msgid "The requested driver %s seems invalid"
 msgstr ""
 
-#: Filestore.class.php:341
+#: Filestore.class.php:362
 msgid "The requested driver seems invalid"
 msgstr ""
 
@@ -663,7 +675,7 @@ msgid ""
 "Server to send data."
 msgstr ""
 
-#: drivers/FTP/views/form.php:244
+#: drivers/FTP/views/form.php:245
 msgid ""
 "This defaults to 'Passive'. If your FTP server is behind a seperate NAT or "
 "Firewall to this VoIP server, you should select 'Active'. In 'Active' mode, "
@@ -676,11 +688,11 @@ msgstr ""
 msgid "This has a maximum size of 25MB."
 msgstr ""
 
-#: drivers/FTP/views/form.php:254
+#: drivers/FTP/views/form.php:255
 msgid "Timeout"
 msgstr ""
 
-#: drivers/FTP/views/form.php:264
+#: drivers/FTP/views/form.php:265
 msgid "Timeout on remote server"
 msgstr ""
 
@@ -690,15 +702,15 @@ msgstr ""
 msgid "Timeout on remote server, default is 30"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:99
+#: drivers/Dropbox/views/form.php:100
 msgid "Token"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:111
+#: drivers/Dropbox/views/form.php:112
 msgid "Token on remote server"
 msgstr ""
 
-#: drivers/FTP/views/form.php:231
+#: drivers/FTP/views/form.php:232
 msgid "Transfer Mode"
 msgstr ""
 
@@ -710,7 +722,7 @@ msgstr ""
 msgid "UUid for the instance"
 msgstr ""
 
-#: drivers/FTP/views/form.php:193
+#: drivers/FTP/views/form.php:194
 msgid "Unix/Linux"
 msgstr ""
 
@@ -718,25 +730,25 @@ msgstr ""
 msgid "Unknown action provided"
 msgstr ""
 
-#: drivers/FTP/views/form.php:133
+#: drivers/FTP/views/form.php:134
 msgid "Use SFTP"
 msgstr ""
 
-#: drivers/FTP/views/form.php:108
+#: drivers/FTP/views/form.php:109
 msgid "Use TLS"
 msgstr ""
 
-#: drivers/FTP/views/form.php:158
-#: drivers/SSH/views/form.php:159
+#: drivers/FTP/views/form.php:159
+#: drivers/SSH/views/form.php:160
 msgid "Username"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:39
+#: drivers/Dropbox/views/form.php:40
 #: drivers/Email/views/form.php:39
-#: drivers/FTP/views/form.php:36
+#: drivers/FTP/views/form.php:37
 #: drivers/Local/views/form.php:48
 #: drivers/S3/views/form.php:46
-#: drivers/SSH/views/form.php:38
+#: drivers/SSH/views/form.php:39
 msgid "We define if this storage is enabled or disabled."
 msgstr ""
 
@@ -754,18 +766,18 @@ msgstr ""
 msgid "What's this?"
 msgstr ""
 
-#: drivers/FTP/views/form.php:195
+#: drivers/FTP/views/form.php:196
 msgid "Windows"
 msgstr ""
 
-#: drivers/Dropbox/views/form.php:30
+#: drivers/Dropbox/views/form.php:31
 #: drivers/Email/views/form.php:30
-#: drivers/FTP/views/form.php:27
-#: drivers/FTP/views/form.php:114
-#: drivers/FTP/views/form.php:139
+#: drivers/FTP/views/form.php:28
+#: drivers/FTP/views/form.php:115
+#: drivers/FTP/views/form.php:140
 #: drivers/Local/views/form.php:39
 #: drivers/S3/views/form.php:37
-#: drivers/SSH/views/form.php:29
+#: drivers/SSH/views/form.php:30
 msgid "Yes"
 msgstr ""
 
