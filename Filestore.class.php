@@ -182,6 +182,9 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 				elseif($driver == "SSH") {
 					$result = check_ssh_connect($_REQUEST['host'], $_REQUEST['port'], $_REQUEST['user'], $_REQUEST['key'], $_REQUEST['path']);
 				}
+				elseif($driver == "S3") {
+					$result = check_s3_connect($_REQUEST['region'], $_REQUEST['bucket'], $_REQUEST['awsaccesskey'], $_REQUEST['awssecret'], $_REQUEST['storageclass'], $_REQUEST['path']);
+				}
 				return $result;
 			break;
 		}
