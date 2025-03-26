@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-24 02:50-0400\n"
+"POT-Creation-Date: 2025-03-26 01:01-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,15 +26,15 @@ msgstr ""
 msgid "AGI directory"
 msgstr ""
 
-#: drivers/S3/views/form.php:123
+#: drivers/S3/views/form.php:124
 msgid "AWS Access Key"
 msgstr ""
 
-#: drivers/S3/views/form.php:96
+#: drivers/S3/views/form.php:97
 msgid "AWS Region"
 msgstr ""
 
-#: drivers/S3/views/form.php:140
+#: drivers/S3/views/form.php:141
 msgid "AWS Secret"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Add a new FTP instance"
 msgstr ""
 
-#: drivers/S3/views/form.php:18
+#: drivers/S3/views/form.php:19
 msgid "Advanced"
 msgstr ""
 
@@ -111,30 +111,31 @@ msgstr ""
 msgid "B"
 msgstr ""
 
-#: drivers/S3/views/form.php:69
+#: drivers/S3/views/form.php:70
 msgid "Bucket Name"
 msgstr ""
 
 #: drivers/Dropbox/views/modal.testconnection.php:35
 #: drivers/FTP/views/modal.testconnection.php:42
+#: drivers/S3/views/modal.testconnection.php:35
 #: drivers/SSH/views/modal.testconnection.php:42
 msgid "Close"
 msgstr ""
 
-#: drivers/S3/views/form.php:211
+#: drivers/S3/views/form.php:220
 msgid "Custom Endpoint"
 msgstr ""
 
-#: drivers/S3/views/form.php:231
-#: drivers/S3/views/form.php:241
+#: drivers/S3/views/form.php:240
+#: drivers/S3/views/form.php:250
 msgid "Custom Region"
 msgstr ""
 
-#: drivers/S3/views/form.php:221
+#: drivers/S3/views/form.php:230
 msgid "Custom S3 compatable endpoint"
 msgstr ""
 
-#: drivers/S3/views/form.php:200
+#: drivers/S3/views/form.php:209
 msgid "Danger"
 msgstr ""
 
@@ -154,7 +155,7 @@ msgstr ""
 #: drivers/FTP/views/grid.php:21
 #: drivers/Local/views/form.php:84
 #: drivers/Local/views/grid.php:21
-#: drivers/S3/views/form.php:82
+#: drivers/S3/views/form.php:83
 #: drivers/S3/views/grid.php:21
 #: drivers/SSH/views/form.php:79
 #: drivers/SSH/views/grid.php:21
@@ -231,7 +232,7 @@ msgstr ""
 #: drivers/FTP/views/grid.php:22
 #: drivers/Local/views/form.php:33
 #: drivers/Local/views/grid.php:22
-#: drivers/S3/views/form.php:31
+#: drivers/S3/views/form.php:32
 #: drivers/S3/views/grid.php:22
 #: drivers/SSH/views/form.php:24
 #: drivers/SSH/views/grid.php:22
@@ -312,7 +313,7 @@ msgstr ""
 msgid "Filesystem abstraction for your PBX"
 msgstr ""
 
-#: drivers/S3/views/form.php:10
+#: drivers/S3/views/form.php:11
 msgid "For Use With AWS S3"
 msgstr ""
 
@@ -326,7 +327,7 @@ msgid ""
 "appropriate from address"
 msgstr ""
 
-#: drivers/S3/views/form.php:17
+#: drivers/S3/views/form.php:18
 msgid "General"
 msgstr ""
 
@@ -393,7 +394,7 @@ msgid "Local Directory"
 msgstr ""
 
 #: Api/Gql/Filestore.php:304
-#: drivers/S3/views/form.php:56
+#: drivers/S3/views/form.php:57
 msgid "Local Display Name"
 msgstr ""
 
@@ -435,7 +436,7 @@ msgstr ""
 #: drivers/FTP/views/form.php:117
 #: drivers/FTP/views/form.php:142
 #: drivers/Local/views/form.php:41
-#: drivers/S3/views/form.php:39
+#: drivers/S3/views/form.php:40
 #: drivers/SSH/views/form.php:32
 msgid "No"
 msgstr ""
@@ -456,7 +457,7 @@ msgstr ""
 #: drivers/Dropbox/views/form.php:122
 #: drivers/FTP/views/form.php:212
 #: drivers/Local/views/form.php:108
-#: drivers/S3/views/form.php:181
+#: drivers/S3/views/form.php:182
 #: drivers/SSH/views/form.php:214
 msgid "Path"
 msgstr ""
@@ -467,7 +468,7 @@ msgstr ""
 
 #: Api/Gql/Filestore.php:328
 #: drivers/Dropbox/views/form.php:132
-#: drivers/S3/views/form.php:191
+#: drivers/S3/views/form.php:192
 #: drivers/SSH/views/form.php:228
 msgid "Path on remote server"
 msgstr ""
@@ -510,7 +511,7 @@ msgstr ""
 msgid "Provide the name for this server"
 msgstr ""
 
-#: drivers/S3/views/form.php:113
+#: drivers/S3/views/form.php:114
 msgid "Region provided in AWS"
 msgstr ""
 
@@ -572,7 +573,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: drivers/S3/views/form.php:203
+#: drivers/S3/views/form.php:212
 msgid ""
 "Settings here will override settings in the general tab. Only make changes "
 "here if you know what you are doing. These settings are not validated and "
@@ -611,7 +612,7 @@ msgstr ""
 msgid "Status of the request"
 msgstr ""
 
-#: drivers/S3/views/form.php:157
+#: drivers/S3/views/form.php:158
 msgid "Storage Class"
 msgstr ""
 
@@ -625,6 +626,7 @@ msgstr ""
 
 #: drivers/Dropbox/views/form.php:141
 #: drivers/FTP/views/form.php:274
+#: drivers/S3/views/form.php:201
 #: drivers/SSH/views/form.php:237
 msgid "Test Connection Settings"
 msgstr ""
@@ -650,17 +652,17 @@ msgid ""
 "than the max size are not sent."
 msgstr ""
 
-#: Filestore.class.php:370
+#: Filestore.class.php:373
 #, php-format
 msgid "The requested driver %s is disabled"
 msgstr ""
 
-#: Filestore.class.php:366
+#: Filestore.class.php:369
 #, php-format
 msgid "The requested driver %s seems invalid"
 msgstr ""
 
-#: Filestore.class.php:362
+#: Filestore.class.php:365
 msgid "The requested driver seems invalid"
 msgstr ""
 
@@ -747,7 +749,7 @@ msgstr ""
 #: drivers/Email/views/form.php:39
 #: drivers/FTP/views/form.php:37
 #: drivers/Local/views/form.php:48
-#: drivers/S3/views/form.php:46
+#: drivers/S3/views/form.php:47
 #: drivers/SSH/views/form.php:39
 msgid "We define if this storage is enabled or disabled."
 msgstr ""
@@ -760,9 +762,9 @@ msgstr ""
 msgid "What is File Store?"
 msgstr ""
 
-#: drivers/S3/views/form.php:128
-#: drivers/S3/views/form.php:145
-#: drivers/S3/views/form.php:169
+#: drivers/S3/views/form.php:129
+#: drivers/S3/views/form.php:146
+#: drivers/S3/views/form.php:170
 msgid "What's this?"
 msgstr ""
 
@@ -776,7 +778,7 @@ msgstr ""
 #: drivers/FTP/views/form.php:115
 #: drivers/FTP/views/form.php:140
 #: drivers/Local/views/form.php:39
-#: drivers/S3/views/form.php:37
+#: drivers/S3/views/form.php:38
 #: drivers/SSH/views/form.php:30
 msgid "Yes"
 msgstr ""
