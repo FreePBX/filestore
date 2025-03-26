@@ -44,7 +44,7 @@ function check_s3_connect($region, $bucket, $awsaccesskey, $awssecret, $storagec
 		//echo all error messages so that we can create an if-condition to fetch them
 		//Must be removed after debugging
 		echo $error;
-		//Write the error to the file error.txt in case the error-message is to long
+		//Write the error to the file error.txt in case the error-message is too long
 		file_put_contents("error_save_file.txt", $error);
 		//Debug end
 	}
@@ -57,11 +57,11 @@ function check_s3_connect($region, $bucket, $awsaccesskey, $awssecret, $storagec
 		//echo all error messages so that we can create an if-condition to fetch them
 		//Must be removed after debugging
 		echo $error;
-		//Write the error to the file error.txt in case the error-message is to long
+		//Write the error to the file error.txt in case the error-message is too long
 		file_put_contents("error_delete_file.txt", $error);
 		//Debug end
 	}
-	unlink $file;
+	unlink($file);
 	return "OK";
 }
 ?>
