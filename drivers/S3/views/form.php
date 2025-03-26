@@ -5,6 +5,7 @@ if (empty($displayname)) {
 	$displayname = $bucket ?? '';
 }
 $fstype = isset($fstype) ? $fstype : 'auto';
+include 'modal.testconnection.php';
 ?>
 <div class="container-fluid">
 	<h1><?php echo _('For Use With AWS S3') ?></h1>
@@ -193,6 +194,14 @@ $fstype = isset($fstype) ? $fstype : 'auto';
 										</div>
 									</div>
 									<!--END Path-->
+									<br>
+									<div class="element-container">
+										<div class="row">
+											<div class="col-md-12">
+												<button type='button' class='btn btn-default pull-right' id='testconn'><?php echo _("Test Connection Settings"); ?></button>
+											</div>
+										</div>
+									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="advanced">
 									<div class="panel panel-warning">
@@ -262,4 +271,58 @@ $fstype = isset($fstype) ? $fstype : 'auto';
 			return true;
 		}
 	});
+
+	function testconn() {
+		var req = {
+			module: 'filestore',
+			command: 'testconnection',
+			driver: "S3",
+			bucket:  $('#bucket').val(),
+			region:  $('#region').val(),
+			awsaccesskey: $('#awsaccesskey').val(),
+			awssecret: $('#awssecret').val(),
+			storageclass: $('#storageclass').val(),
+			path: $('#path').val(),
+        };
+		$.ajax({
+			url: FreePBX.ajaxurl,
+			data: req,
+			success:function(data){
+				if(data.message == "Connect failed") {
+								$('#awsapiconnection').text("Connection to the AWS API failed. Please check network settings and that no firewall is blocking access");
+								$('#awscredentials').text("Aborted");
+								$('#awswrite').text("Aborted");
+						}
+						else if(data.message == "Access denied") {
+								$('#awsapiconnection').text("OK");
+								$('#awscredentials').text("Login failed. Please check AWS Access key and AWS secret.");
+								$('#awswrite').text("Aborted");
+						}
+						//Add more error messages here as soon as we catch them (--> after debugging)
+						else {
+								$('#awsapiconnection').text("OK");
+								$('#awscredentials').text("OK");
+								$('#awswrite').text("OK");
+						}
+				},
+		});
+	}
+
+	$("#testconn").click(function(e) {
+		e.preventDefault();
+		$('#awsapiconnection').text("");
+		$('#awscredentials').text("");
+		$('#awswrite').text("");
+		$("#custmodal").modal('show');
+		testconn();
+	});
+
+	$('#testcon_close').click(function(e) {
+		e.preventDefault();
+		$('#awsapiconnection').text("");
+		$('#awscredentials').text("");
+		$('#awswrite').text("");
+		$("#custmodal").modal('hide');
+	});
+
 </script>
