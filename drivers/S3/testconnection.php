@@ -20,13 +20,6 @@ function check_s3_connect($region, $bucket, $awsaccesskey, $awssecret, $storagec
 		if(str_contains($error, '403 Forbidden')) {
 			return "Access denied";
 		}
-		//Debug start
-		//echo all other error messages so we can expand the if-statement to catch them
-		//Must be removed after debugging
-		else {
-			echo §error;
-		}
-		//Debug end
 	}
 	if(!$client->doesBucketExistV2($bucket)) {
 		$client->createBucket(['Bucket' => $bucket,]);
@@ -40,26 +33,17 @@ function check_s3_connect($region, $bucket, $awsaccesskey, $awssecret, $storagec
 	}
 	catch(Exception $error_save_file) {
 		$error = $error_save_file->getMessage();
-		//Debug start
-		//echo all error messages so that we can create an if-condition to fetch them
-		//Must be removed after debugging
-		echo $error;
-		//Write the error to the file error.txt in case the error-message is too long
-		file_put_contents("error_save_file.txt", $error);
-		//Debug end
+		if(str_contains($error, 'InvalidStorageClass')) {
+			return "Invalid StorageClass";
+		}
 	}
 	try {
 		$client->deleteObject(['Bucket' => $bucket, 'Key' => "$path/$key"]);
 	}
 	catch(Exception $error_delete_file) {
+		//Should never happen
 		$error = $error_delete_file->getMessage();
-		//Debug start
-		//echo all error messages so that we can create an if-condition to fetch them
-		//Must be removed after debugging
-		echo $error;
-		//Write the error to the file error.txt in case the error-message is too long
-		file_put_contents("error_delete_file.txt", $error);
-		//Debug end
+		return $error;
 	}
 	unlink($file);
 	return "OK";

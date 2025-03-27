@@ -284,7 +284,7 @@ include 'modal.testconnection.php';
 					$('#sshconnection').text("OK");
 					$('#sshchdir').text("Aborted");
 					$('#sshwrite').text("Aborted");
-					$('#sshlogin').text("Login failed! Please verify username and that the specified key is athorized to connect to the host.");
+					$('#sshlogin').text("Login failed! Please verify your username and ensure that the specified key is authorized to connect to the host.");
 				}
 				else if(data.message == "Chdir failed") {
 					$('#sshconnection').text("OK");
