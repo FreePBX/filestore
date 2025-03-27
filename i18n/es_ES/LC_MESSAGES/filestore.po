@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-26 01:01-0400\n"
+"POT-Creation-Date: 2025-03-27 03:08-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,10 +112,10 @@ msgstr ""
 msgid "Bucket Name"
 msgstr ""
 
-#: drivers/Dropbox/views/modal.testconnection.php:35
-#: drivers/FTP/views/modal.testconnection.php:42
-#: drivers/S3/views/modal.testconnection.php:35
-#: drivers/SSH/views/modal.testconnection.php:42
+#: drivers/Dropbox/views/modal.testconnection.php:37
+#: drivers/FTP/views/modal.testconnection.php:44
+#: drivers/S3/views/modal.testconnection.php:37
+#: drivers/SSH/views/modal.testconnection.php:44
 msgid "Close"
 msgstr ""
 
