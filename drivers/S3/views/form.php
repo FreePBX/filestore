@@ -289,22 +289,26 @@ include 'modal.testconnection.php';
 			data: req,
 			success:function(data){
 				if(data.message == "Connect failed") {
-								$('#awsapiconnection').text("Connection to the AWS API failed. Please check network settings and that no firewall is blocking access");
-								$('#awscredentials').text("Aborted");
-								$('#awswrite').text("Aborted");
-						}
-						else if(data.message == "Access denied") {
-								$('#awsapiconnection').text("OK");
-								$('#awscredentials').text("Login failed. Please check AWS Access key and AWS secret.");
-								$('#awswrite').text("Aborted");
-						}
-						//Add more error messages here as soon as we catch them (--> after debugging)
-						else {
-								$('#awsapiconnection').text("OK");
-								$('#awscredentials').text("OK");
-								$('#awswrite').text("OK");
-						}
-				},
+					$('#awsapiconnection').text("Connection to the AWS API failed. Please check network settings and that no firewall is blocking access");
+					$('#awscredentials').text("Aborted");
+					$('#awswrite').text("Aborted");
+				}
+				else if(data.message == "Access denied") {
+					$('#awsapiconnection').text("OK");
+					$('#awscredentials').text("Login failed. Please check AWS Access key and AWS secret.");
+					$('#awswrite').text("Aborted");
+				}
+				else if(data.message == "Invalid StorageClass") {
+					$('#awsapiconnection').text("OK");
+					$('#awscredentials').text("OK");
+					$('#awswrite').text("Write failed. Error message: Invalid Storage Class.");
+				}
+				else {
+					$('#awsapiconnection').text("OK");
+					$('#awscredentials').text("OK");
+					$('#awswrite').text("OK");
+				}
+			},
 		});
 	}
 

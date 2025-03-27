@@ -7,7 +7,9 @@
             </div>
             <div class='modal-body'>
                 <div class="row">
-                    Checking Connection settings...<br><br><br>
+                     <div class="col-sm-12">
+                        Checking Connection settings...<br><br><br>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-sm-3 control-label">

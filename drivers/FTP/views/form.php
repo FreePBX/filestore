@@ -328,7 +328,7 @@ include 'modal.testconnection.php';
 					$('#ftpconnection').text("OK");
 					$('#ftpchdir').text("Aborted");
 					$('#ftpwrite').text("Aborted");
-					$('#ftplogin').text("Login failed! Please verify username and password. If you activated TLS, also verify that the server support enryption.");
+					$('#ftplogin').text("Login failed! Please verify your username and password. If you have activated TLS, please ensure that the server supports encryption.");
 				}
 				else if(data.message == "Chdir failed") {
 					$('#ftpconnection').text("OK");
