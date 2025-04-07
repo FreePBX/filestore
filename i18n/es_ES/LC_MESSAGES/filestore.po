@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-06 05:49+0000\n"
+"POT-Creation-Date: 2025-04-07 07:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -264,7 +264,7 @@ msgstr ""
 msgid "File from %s, Identifier: %s"
 msgstr ""
 
-#: views/rnav.php:1
+#: filestore.i18n.php:4 filestore.i18n.php:10 views/rnav.php:1
 msgid "Filestore"
 msgstr ""
 
@@ -276,6 +276,10 @@ msgstr ""
 
 #: drivers/FTP/views/form.php:186
 msgid "Filesystem Type"
+msgstr ""
+
+#: filestore.i18n.php:8
+msgid "Filesystem abstraction for your PBX"
 msgstr ""
 
 #: drivers/S3/views/form.php:10
@@ -510,6 +514,10 @@ msgstr ""
 #: Api/Gql/Filestore.php:212 Api/Gql/Filestore.php:270
 #: Api/Gql/Filestore.php:482
 msgid "Set user name"
+msgstr ""
+
+#: filestore.i18n.php:6
+msgid "Settings"
 msgstr ""
 
 #: drivers/S3/views/form.php:179
