@@ -113,8 +113,8 @@ class MultipartUploader extends AbstractUploader
             // Case 2: Stream is not seekable; must store in temp stream.
             $source = $this->limitPartStream($this->source);
             $source = $this->decorateWithHashes($source, $data);
-            $body = Psr7\Utils::streamFor();
-            Psr7\Utils::copyToStream($source, $body);
+            $body = Psr7\stream_for();
+            Psr7\copy_to_stream($source, $body);
         }
 
         $contentLength = $body->getSize();
@@ -126,13 +126,6 @@ class MultipartUploader extends AbstractUploader
 
         $body->seek(0);
         $data['Body'] = $body;
-
-        if (isset($config['add_content_md5'])
-            && $config['add_content_md5'] === true
-        ) {
-            $data['AddContentMD5'] = true;
-        }
-
         $data['ContentLength'] = $contentLength;
 
         return $data;
@@ -146,7 +139,7 @@ class MultipartUploader extends AbstractUploader
     protected function getSourceMimeType()
     {
         if ($uri = $this->source->getMetadata('uri')) {
-            return Psr7\MimeType::fromFilename($uri)
+            return Psr7\mimetype_from_filename($uri)
                 ?: 'application/octet-stream';
         }
     }

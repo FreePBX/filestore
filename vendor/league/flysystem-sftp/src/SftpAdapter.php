@@ -42,11 +42,6 @@ class SftpAdapter extends AbstractFtpAdapter
     protected $useAgent = false;
 
     /**
-     * @var bool
-     */
-    protected $usePingForConnectivityCheck = false;
-
-    /**
      * @var Agent
      */
     private $agent;
@@ -54,7 +49,7 @@ class SftpAdapter extends AbstractFtpAdapter
     /**
      * @var array
      */
-    protected $configurable = ['host', 'hostFingerprint', 'port', 'username', 'password', 'useAgent', 'agent', 'timeout', 'root', 'privateKey', 'passphrase', 'permPrivate', 'permPublic', 'directoryPerm', 'NetSftpConnection', 'usePingForConnectivityCheck'];
+    protected $configurable = ['host', 'hostFingerprint', 'port', 'username', 'password', 'useAgent', 'agent', 'timeout', 'root', 'privateKey', 'passphrase', 'permPrivate', 'permPublic', 'directoryPerm', 'NetSftpConnection'];
 
     /**
      * @var array
@@ -124,13 +119,6 @@ class SftpAdapter extends AbstractFtpAdapter
     public function setPassphrase($passphrase)
     {
         $this->passphrase = $passphrase;
-
-        return $this;
-    }
-
-    protected function setUsePingForConnectivityCheck($useIt)
-    {
-        $this->usePingForConnectivityCheck = $useIt;
 
         return $this;
     }
@@ -635,10 +623,10 @@ class SftpAdapter extends AbstractFtpAdapter
      */
     public function isConnected()
     {
-        if ( ! $this->connection instanceof SFTP || ! $this->connection->isConnected()) {
-            return false;
+        if ($this->connection instanceof SFTP && $this->connection->isConnected()) {
+            return true;
         }
 
-        return $this->usePingForConnectivityCheck === false || $this->connection->ping();
+        return false;
     }
 }

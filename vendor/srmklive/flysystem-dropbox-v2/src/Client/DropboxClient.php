@@ -67,18 +67,12 @@ class DropboxClient
     protected $request;
 
     /**
-     * @var int
-     */
-    protected $maxChunkSize;
-
-    /**
      * DropboxClient constructor.
      *
      * @param string             $token
      * @param \GuzzleHttp\Client $client
-     * @param int                $maxChunkSize
      */
-    public function __construct($token, HttpClient $client = null, $maxChunkSize = self::MAX_CHUNK_SIZE)
+    public function __construct($token, HttpClient $client = null)
     {
         $this->setAccessToken($token);
 
@@ -86,8 +80,6 @@ class DropboxClient
 
         $this->apiUrl = 'https://api.dropboxapi.com/2/';
         $this->apiContentUrl = 'https://content.dropboxapi.com/2/';
-        $this->maxChunkSize = ($maxChunkSize < self::MAX_CHUNK_SIZE ?
-            ($maxChunkSize > 1 ? $maxChunkSize : 1) : self::MAX_CHUNK_SIZE);
     }
 
     /**
@@ -126,8 +118,6 @@ class DropboxClient
      * @param string $fromPath
      * @param string $toPath
      *
-     * @throws \Exception
-     *
      * @return \Psr\Http\Message\ResponseInterface
      *
      * @link https://www.dropbox.com/developers/documentation/http/documentation#files-copy
@@ -148,8 +138,6 @@ class DropboxClient
      * Create a folder at a given path.
      *
      * @param string $path
-     *
-     * @throws \Exception
      *
      * @return \Psr\Http\Message\ResponseInterface
      *
@@ -177,8 +165,6 @@ class DropboxClient
      *
      * @param string $path
      *
-     * @throws \Exception
-     *
      * @return \Psr\Http\Message\ResponseInterface
      *
      * @link https://www.dropbox.com/developers/documentation/http/documentation#files-delete
@@ -198,8 +184,6 @@ class DropboxClient
      * Download a file from a user's Dropbox.
      *
      * @param string $path
-     *
-     * @throws \Exception
      *
      * @return resource
      *
@@ -227,8 +211,6 @@ class DropboxClient
      *
      * @param string $path
      *
-     * @throws \Exception
-     *
      * @return \Psr\Http\Message\ResponseInterface
      *
      * @link https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
@@ -251,8 +233,6 @@ class DropboxClient
      * Content-Type of the link is determined automatically by the file's mime type.
      *
      * @param string $path
-     *
-     * @throws \Exception
      *
      * @return string
      *
@@ -282,8 +262,6 @@ class DropboxClient
      * @param string $path
      * @param string $format
      * @param string $size
-     *
-     * @throws \Exception
      *
      * @return string
      */
@@ -317,8 +295,6 @@ class DropboxClient
      * @param string $path
      * @param bool   $recursive
      *
-     * @throws \Exception
-     *
      * @return \Psr\Http\Message\ResponseInterface
      *
      * @link https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder
@@ -340,8 +316,6 @@ class DropboxClient
      * retrieve updates to the folder, following the same rules as documented for list_folder.
      *
      * @param string $cursor
-     *
-     * @throws \Exception
      *
      * @return \Psr\Http\Message\ResponseInterface
      *
@@ -365,8 +339,6 @@ class DropboxClient
      *
      * @param string $fromPath
      * @param string $toPath
-     *
-     * @throws \Exception
      *
      * @return \Psr\Http\Message\ResponseInterface
      *
@@ -394,8 +366,6 @@ class DropboxClient
      * @param string          $path
      * @param string|resource $contents
      * @param string|array    $mode
-     *
-     * @throws \Exception
      *
      * @return array
      */
@@ -427,8 +397,6 @@ class DropboxClient
      *
      * @link https://www.dropbox.com/developers/documentation/http/documentation#users-get_current_account
      *
-     * @throws \Exception
-     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function getAccountInfo()
@@ -442,8 +410,6 @@ class DropboxClient
      * Revoke current access token.
      *
      * @link https://www.dropbox.com/developers/documentation/http/documentation#auth-token-revoke
-     *
-     * @throws \Exception
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
@@ -462,42 +428,6 @@ class DropboxClient
     protected function setupRequest($request)
     {
         $this->request = $request;
-    }
-
-    /**
-     * Perform Dropbox API v2 request.
-     *
-     * @param $endpoint
-     * @param $payload
-     *
-     * @throws \Exception
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function performApiRequest($endpoint, $payload)
-    {
-        $this->setupRequest($payload);
-        $this->apiEndpoint = $endpoint;
-
-        return $this->doDropboxApiRequest();
-    }
-
-    /**
-     * Perform Dropbox API v2 content request.
-     *
-     * @param $endpoint
-     * @param $payload
-     *
-     * @throws \Exception
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function performContentApiRequest($endpoint, $payload)
-    {
-        $this->setupRequest($payload);
-        $this->apiEndpoint = $endpoint;
-
-        return $this->doDropboxApiContentRequest();
     }
 
     /**

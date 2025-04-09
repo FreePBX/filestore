@@ -41,7 +41,6 @@ class AwsS3Adapter extends AbstractAdapter implements CanOverwriteFiles
         'ContentDisposition',
         'ContentEncoding',
         'ContentLength',
-        'ContentMD5',
         'ContentType',
         'Expires',
         'GrantFullControl',
@@ -287,7 +286,7 @@ class AwsS3Adapter extends AbstractAdapter implements CanOverwriteFiles
      */
     protected function retrievePaginatedListing(array $options)
     {
-        $resultPaginator = $this->s3Client->getPaginator('ListObjectsV2', $options);
+        $resultPaginator = $this->s3Client->getPaginator('ListObjects', $options);
         $listing = [];
 
         foreach ($resultPaginator as $result) {
@@ -535,7 +534,7 @@ class AwsS3Adapter extends AbstractAdapter implements CanOverwriteFiles
      */
     public function setPathPrefix($prefix)
     {
-        $prefix = ltrim((string) $prefix, '/');
+        $prefix = ltrim($prefix, '/');
 
         return parent::setPathPrefix($prefix);
     }
@@ -700,7 +699,7 @@ class AwsS3Adapter extends AbstractAdapter implements CanOverwriteFiles
         // Maybe this isn't an actual key, but a prefix.
         // Do a prefix listing of objects to determine.
         $command = $this->s3Client->getCommand(
-            'ListObjectsV2',
+            'listObjects',
             [
                 'Bucket'  => $this->bucket,
                 'Prefix'  => rtrim($location, '/') . '/',

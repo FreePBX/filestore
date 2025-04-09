@@ -30,11 +30,6 @@ class AesGcmDecryptingStream implements AesStreamInterface
     private $tagLength;
 
     /**
-     * @var StreamInterface
-     */
-    private $stream;
-
-    /**
      * @param StreamInterface $cipherText
      * @param string $key
      * @param string $initializationVector
@@ -59,9 +54,6 @@ class AesGcmDecryptingStream implements AesStreamInterface
         $this->aad = $aad;
         $this->tagLength = $tagLength;
         $this->keySize = $keySize;
-        // unsetting the property forces the first access to go through
-        // __get().
-        unset($this->stream);
     }
 
     public function getOpenSslName()
@@ -82,7 +74,7 @@ class AesGcmDecryptingStream implements AesStreamInterface
     public function createStream()
     {
         if (version_compare(PHP_VERSION, '7.1', '<')) {
-            return Psr7\Utils::streamFor(AesGcm::decrypt(
+            return Psr7\stream_for(AesGcm::decrypt(
                 (string) $this->cipherText,
                 $this->initializationVector,
                 new Key($this->key),
@@ -104,11 +96,11 @@ class AesGcmDecryptingStream implements AesStreamInterface
                 throw new CryptoException('The requested object could not be'
                     . ' decrypted due to an invalid authentication tag.');
             }
-            return Psr7\Utils::streamFor($result);
+            return Psr7\stream_for($result);
         }
     }
 
-    public function isWritable(): bool
+    public function isWritable()
     {
         return false;
     }

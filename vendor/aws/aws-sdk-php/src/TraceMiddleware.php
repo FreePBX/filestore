@@ -1,14 +1,11 @@
 <?php
 namespace Aws;
 
-use Aws\Api\Service;
 use Aws\Exception\AwsException;
 use GuzzleHttp\Promise\RejectedPromise;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
 
 /**
  * Traces state changes between middlewares.
@@ -18,8 +15,6 @@ class TraceMiddleware
     private $prevOutput;
     private $prevInput;
     private $config;
-    /** @var Service */
-    private $service;
 
     private static $authHeaders = [
         'X-Amz-Security-Token' => '[TOKEN]',
@@ -61,7 +56,7 @@ class TraceMiddleware
      *   headers contained in this array will be replaced with the if
      *   "scrub_auth" is set to true.
      */
-    public function __construct(array $config = [], ?Service $service = null)
+    public function __construct(array $config = [])
     {
         $this->config = $config + [
             'logfn'        => function ($value) { echo $value; },
@@ -74,7 +69,6 @@ class TraceMiddleware
 
         $this->config['auth_strings'] += self::$authStrings;
         $this->config['auth_headers'] += self::$authHeaders;
-        $this->service = $service;
     }
 
     public function __invoke($step, $name)
@@ -84,7 +78,7 @@ class TraceMiddleware
         return function (callable $next) use ($step, $name) {
             return function (
                 CommandInterface $command,
-                $request = null
+                RequestInterface $request = null
             ) use ($next, $step, $name) {
                 $this->createHttpDebug($command);
                 $start = microtime(true);
@@ -159,27 +153,25 @@ class TraceMiddleware
         return [
             'instance' => spl_object_hash($cmd),
             'name'     => $cmd->getName(),
-            'params'   => $this->getRedactedArray($cmd)
+            'params'   => $cmd->toArray()
         ];
     }
 
-    private function requestArray($request = null)
+    private function requestArray(RequestInterface $request = null)
     {
-        return !$request instanceof RequestInterface
-            ? []
-            : array_filter([
-                'instance' => spl_object_hash($request),
-                'method'   => $request->getMethod(),
-                'headers'  => $this->redactHeaders($request->getHeaders()),
-                'body'     => $this->streamStr($request->getBody()),
-                'scheme'   => $request->getUri()->getScheme(),
-                'port'     => $request->getUri()->getPort(),
-                'path'     => $request->getUri()->getPath(),
-                'query'    => $request->getUri()->getQuery(),
+        return !$request ? [] : array_filter([
+            'instance' => spl_object_hash($request),
+            'method'   => $request->getMethod(),
+            'headers'  => $this->redactHeaders($request->getHeaders()),
+            'body'     => $this->streamStr($request->getBody()),
+            'scheme'   => $request->getUri()->getScheme(),
+            'port'     => $request->getUri()->getPort(),
+            'path'     => $request->getUri()->getPath(),
+            'query'    => $request->getUri()->getQuery(),
         ]);
     }
 
-    private function responseArray(?ResponseInterface $response = null)
+    private function responseArray(ResponseInterface $response = null)
     {
         return !$response ? [] : [
             'instance'   => spl_object_hash($response),
@@ -287,11 +279,9 @@ class TraceMiddleware
     private function flushHttpDebug(CommandInterface $command)
     {
         if ($res = $command['@http']['debug']) {
-            if (is_resource($res)) {
-                rewind($res);
-                $this->write(stream_get_contents($res));
-                fclose($res);
-            }
+            rewind($res);
+            $this->write(stream_get_contents($res));
+            fclose($res);
             $command['@http']['debug'] = null;
         }
     }
@@ -320,41 +310,5 @@ class TraceMiddleware
         }
 
         return $headers;
-    }
-
-    /**
-     * @param CommandInterface $cmd
-     * @return array
-     */
-    private function getRedactedArray(CommandInterface $cmd)
-    {
-        if (!isset($this->service["shapes"])) {
-            return $cmd->toArray();
-        }
-        $shapes = $this->service["shapes"];
-        $cmdArray = $cmd->toArray();
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveArrayIterator($cmdArray),
-            RecursiveIteratorIterator::SELF_FIRST
-        );
-        foreach ($iterator as $parameter => $value) {
-           if (isset($shapes[$parameter]['sensitive']) &&
-               $shapes[$parameter]['sensitive'] === true
-           ) {
-               $redactedValue = is_string($value) ? "[{$parameter}]" : ["[{$parameter}]"];
-               $currentDepth = $iterator->getDepth();
-               for ($subDepth = $currentDepth; $subDepth >= 0; $subDepth--) {
-                   $subIterator = $iterator->getSubIterator($subDepth);
-                   $subIterator->offsetSet(
-                       $subIterator->key(),
-                       ($subDepth === $currentDepth
-                           ? $redactedValue
-                           : $iterator->getSubIterator(($subDepth+1))->getArrayCopy()
-                       )
-                   );
-               }
-           }
-        }
-        return $iterator->getArrayCopy();
     }
 }

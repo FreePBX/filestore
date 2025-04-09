@@ -3,6 +3,7 @@ namespace Aws\Crypto\Polyfill;
 
 /**
  * Class ByteArray
+ * @package Aws\Crypto\Polyfill
  */
 class ByteArray extends \SplFixedArray
 {
@@ -137,7 +138,6 @@ class ByteArray extends \SplFixedArray
      * @param int $newval
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function offsetSet($index, $newval)
     {
         parent::offsetSet($index, $newval & 0xff);

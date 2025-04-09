@@ -4,11 +4,7 @@ namespace Aws;
 use Aws\Api\Service;
 use Aws\Api\Validator;
 use Aws\Credentials\CredentialsInterface;
-use Aws\EndpointV2\EndpointProviderV2;
 use Aws\Exception\AwsException;
-use Aws\Signature\S3ExpressSignature;
-use Aws\Token\TokenAuthorization;
-use Aws\Token\TokenInterface;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\LazyOpenStream;
@@ -38,7 +34,7 @@ final class Middleware
         ) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null)
+                RequestInterface $request = null)
             use (
                 $handler,
                 $api,
@@ -67,20 +63,14 @@ final class Middleware
      *
      * @return callable
      */
-    public static function validation(Service $api, ?Validator $validator = null)
+    public static function validation(Service $api, Validator $validator = null)
     {
         $validator = $validator ?: new Validator();
         return function (callable $handler) use ($api, $validator) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($api, $validator, $handler) {
-                if ($api->isModifiedModel()) {
-                    $api = new Service(
-                        $api->getDefinition(),
-                        $api->getProvider()
-                    );
-                }
                 $operation = $api->getOperation($command->getName());
                 $validator->validate(
                     $command->getName(),
@@ -97,15 +87,13 @@ final class Middleware
      *
      * @param callable $serializer Function used to serialize a request for a
      *                             command.
-     * @param EndpointProviderV2 | null $endpointProvider
-     * @param array $providerArgs
      * @return callable
      */
-    public static function requestBuilder($serializer)
+    public static function requestBuilder(callable $serializer)
     {
         return function (callable $handler) use ($serializer) {
-            return function (CommandInterface $command, $endpoint = null) use ($serializer, $handler) {
-                return $handler($command, $serializer($command, $endpoint));
+            return function (CommandInterface $command) use ($serializer, $handler) {
+                return $handler($command, $serializer($command));
             };
         };
     }
@@ -122,41 +110,17 @@ final class Middleware
      *
      * @return callable
      */
-    public static function signer(callable $credProvider, callable $signatureFunction, $tokenProvider = null, $config = [])
+    public static function signer(callable $credProvider, callable $signatureFunction)
     {
-        return function (callable $handler) use ($signatureFunction, $credProvider, $tokenProvider, $config) {
+        return function (callable $handler) use ($signatureFunction, $credProvider) {
             return function (
                 CommandInterface $command,
                 RequestInterface $request
-            ) use ($handler, $signatureFunction, $credProvider, $tokenProvider, $config) {
+            ) use ($handler, $signatureFunction, $credProvider) {
                 $signer = $signatureFunction($command);
-                if ($signer instanceof TokenAuthorization) {
-                    return $tokenProvider()->then(
-                        function (TokenInterface $token)
-                        use ($handler, $command, $signer, $request) {
-                            return $handler(
-                                $command,
-                                $signer->authorizeRequest($request, $token)
-                            );
-                        }
-                    );
-                }
-
-                if ($signer instanceof S3ExpressSignature) {
-                    $credentialPromise = $config['s3_express_identity_provider']($command);
-                } else {
-                    $credentialPromise = $credProvider();
-                }
-
-                return $credentialPromise->then(
+                return $credProvider()->then(
                     function (CredentialsInterface $creds)
                     use ($handler, $command, $signer, $request) {
-                        // Capture credentials metric
-                        $command->getMetricsBuilder()->identifyMetricByValueAndAppend(
-                            'credentials',
-                            $creds
-                        );
-
                         return $handler(
                             $command,
                             $signer->signRequest($request, $creds)
@@ -184,7 +148,7 @@ final class Middleware
         return function (callable $handler) use ($fn) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler, $fn) {
                 $fn($command, $request);
                 return $handler($command, $request);
@@ -210,8 +174,8 @@ final class Middleware
      * @return callable
      */
     public static function retry(
-        ?callable $decider = null,
-        ?callable $delay = null,
+        callable $decider = null,
+        callable $delay = null,
         $stats = false
     ) {
         $decider = $decider ?: RetryMiddleware::createDefaultDecider();
@@ -259,7 +223,7 @@ final class Middleware
         return function (callable $handler) use ($operations) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler, $operations) {
                 if (!$request->hasHeader('Content-Type')
                     && in_array($command->getName(), $operations, true)
@@ -267,7 +231,7 @@ final class Middleware
                 ) {
                     $request = $request->withHeader(
                         'Content-Type',
-                        Psr7\MimeType::fromFilename($uri) ?: 'application/octet-stream'
+                        Psr7\mimetype_from_filename($uri) ?: 'application/octet-stream'
                     );
                 }
 
@@ -275,45 +239,7 @@ final class Middleware
             };
         };
     }
-    /**
-     * Middleware wrapper function that adds a trace id header to requests
-     * from clients instantiated in supported Lambda runtime environments.
-     *
-     * The purpose for this header is to track and stop Lambda functions
-     * from being recursively invoked due to misconfigured resources.
-     *
-     * @return callable
-     */
-    public static function recursionDetection()
-    {
-        return function (callable $handler) {
-            return function (
-                CommandInterface $command,
-                RequestInterface $request
-            ) use ($handler){
-                $isLambda = getenv('AWS_LAMBDA_FUNCTION_NAME');
-                $traceId = str_replace('\e', '\x1b', getenv('_X_AMZN_TRACE_ID'));
 
-                if ($isLambda && $traceId) {
-                    if (!$request->hasHeader('X-Amzn-Trace-Id')) {
-                        $ignoreChars = ['=', ';', ':', '+', '&', '[', ']', '{', '}', '"', '\'', ','];
-                        $traceIdEncoded = rawurlencode(stripcslashes($traceId));
-
-                        foreach($ignoreChars as $char) {
-                            $encodedChar = rawurlencode($char);
-                            $traceIdEncoded = str_replace($encodedChar, $char,  $traceIdEncoded);
-                        }
-
-                        return $handler($command, $request->withHeader(
-                            'X-Amzn-Trace-Id',
-                            $traceIdEncoded
-                        ));
-                    }
-                }
-                return $handler($command, $request);
-            };
-        };
-    }
     /**
      * Tracks command and request history using a history container.
      *
@@ -328,7 +254,7 @@ final class Middleware
         return function (callable $handler) use ($history) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler, $history) {
                 $ticket = $history->start($command, $request);
                 return $handler($command, $request)
@@ -339,7 +265,7 @@ final class Middleware
                         },
                         function ($reason) use ($history, $ticket) {
                             $history->finish($ticket, $reason);
-                            return Promise\Create::rejectionFor($reason);
+                            return Promise\rejection_for($reason);
                         }
                     );
             };
@@ -360,7 +286,7 @@ final class Middleware
         return function (callable $handler) use ($f) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler, $f) {
                 return $handler($command, $f($request));
             };
@@ -381,7 +307,7 @@ final class Middleware
         return function (callable $handler) use ($f) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler, $f) {
                 return $handler($f($command), $request);
             };
@@ -401,7 +327,7 @@ final class Middleware
         return function (callable $handler) use ($f) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler, $f) {
                 return $handler($command, $request)->then($f);
             };
@@ -413,7 +339,7 @@ final class Middleware
         return function (callable $handler) {
             return function (
                 CommandInterface $command,
-                ?RequestInterface $request = null
+                RequestInterface $request = null
             ) use ($handler) {
                 $start = microtime(true);
                 return $handler($command, $request)
@@ -437,7 +363,7 @@ final class Middleware
                                     'total_time' => microtime(true) - $start,
                                 ] + $err->getTransferInfo());
                             }
-                            return Promise\Create::rejectionFor($err);
+                            return Promise\rejection_for($err);
                         }
                     );
             };

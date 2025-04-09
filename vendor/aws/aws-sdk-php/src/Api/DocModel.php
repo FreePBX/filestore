@@ -90,29 +90,18 @@ class DocModel
 
         $result = '';
         $d = $this->docs['shapes'][$shapeName];
-        if (isset($d['refs']["{$parentName}\${$ref}"])) {
-            $result = $d['refs']["{$parentName}\${$ref}"];
+        if (isset($d['refs']["{$parentName}\$${ref}"])) {
+            $result = $d['refs']["{$parentName}\$${ref}"];
         } elseif (isset($d['base'])) {
             $result = $d['base'];
         }
 
         if (isset($d['append'])) {
-            if (!isset($d['excludeAppend'])
-                || !in_array($parentName, $d['excludeAppend'])
-            ) {
-                $result .= $d['append'];
-            }
-        }
-
-        if (isset($d['appendOnly'])
-           && in_array($parentName, $d['appendOnly']['shapes'])
-        ) {
-            $result .= $d['appendOnly']['message'];
+            $result .= $d['append'];
         }
 
         return $this->clean($result);
     }
-
 
     private function clean($content)
     {
@@ -127,7 +116,7 @@ class DocModel
             'output-html' => true,
             'show-body-only' => true,
             'drop-empty-paras' => true,
-            'clean' => true,
+            'drop-font-tags' => true,
             'drop-proprietary-attributes' => true,
             'hide-comments' => true,
             'logical-emphasis' => true
