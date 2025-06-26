@@ -2,11 +2,12 @@
   <rawname>filestore</rawname>
   <name>Filestore</name>
   <repo>standard</repo>
-  <version>16.0.18.5</version>
+  <version>16.0.18.6</version>
   <publisher>Sangoma Technologies</publisher>
   <license>AGPLv3</license>
   <licenselink>http://www.gnu.org/licenses/agpl-3.0.txt</licenselink>
   <changelog>
+		*16.0.18.6* #issue-776  kvstore_FreePBX_modules_Filestore contains a seemingly unused entry 
 		*16.0.18.5* Error in GQL : addFTPInstanceInput - Missing required field 'enabled' of type Boolean 
 		*16.0.18.4* reverted  composer update 
 		*16.0.18.3* guzzle lib update 
