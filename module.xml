@@ -2,11 +2,12 @@
 	<rawname>filestore</rawname>
 	<name>Filestore</name>
 	<repo>standard</repo>
-	<version>17.0.2.40</version>
+	<version>17.0.2.41</version>
 	<publisher>Sangoma Technologies</publisher>
 	<license>AGPLv3</license>
 	<licenselink>http://www.gnu.org/licenses/agpl-3.0.txt</licenselink>
 	<changelog>
+		*17.0.2.41* #issue-776  kvstore_FreePBX_modules_Filestore contains a seemingly unused entry 
 		*17.0.2.40* Github filestore issue#44 S3 driver testconnection fails when using custom endpoint	
 		*17.0.2.39* Error in GQL : addFTPInstanceInput - Missing required field 'enabled' of type Boolean 
 		*17.0.2.38* ##687 FreePBX 17 Filestore Addd Test-Button for (s)ftp, Dropbox and SSH Connections 
