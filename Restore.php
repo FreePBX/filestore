@@ -4,6 +4,8 @@ use FreePBX\modules\Backup as Base;
 class Restore Extends Base\RestoreBase{
   public function runRestore(){
     $settings = $this->getConfigs();
+    $clearkvstore = "truncate table kvstore_FreePBX_modules_Filestore";
+    $this->FreePBX->Database->query($clearkvstore);
 		$this->importKVStore($settings);
   }
 	public function processLegacy($pdo, $data, $tables, $unknownTables){
