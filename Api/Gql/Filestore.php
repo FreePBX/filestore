@@ -189,7 +189,7 @@ class Filestore extends Base {
 		return [
 			'enabled' => [
 				'type' => Type::boolean(),
-				'description' => _('Enabled FTP.')
+				'description' => _('Enabled FTP. Defaults to true if not provided.')
 			],
 			'serverName' => [
 				'type' => Type::nonNull(Type::string()),
@@ -544,7 +544,7 @@ class Filestore extends Base {
 	 * @return void
 	 */
 	private function resolveFTPNames($input){
-		$input["enabled"] = (((!isset($input["enabled"])) || (isset($input["enabled"]) && $input["enabled"] === true)) ? "yes" : "no");
+		$input["enabled"]= isset($input["enabled"]) ? ($input["enabled"] === true ? "yes" : "no") : "yes";
 		$input['name']  = $input['serverName'];
 		$input['host']  = $input['hostName'];
 		$input['user']  = $input['userName'];
@@ -582,7 +582,8 @@ class Filestore extends Base {
 	private function FTPUpdateFields($input){
 		$input['id'] = ltrim($input['id'],'FTP_');
 		$res = $this->freepbx->filestore->getItemById($input['id']);
-		$input["enabled"] = (((!isset($input["enabled"])) || (isset($input["enabled"]) && $input["enabled"] === true)) ? "yes" : "no");
+		
+		$input["enabled"]= isset($input["enabled"]) ? ($input["enabled"] === true ? "yes" : "no") : "yes";
 		$input['name']  = isset($input['serverName']) ? $input['serverName'] : $res['name'];
 		$input['host']  = isset($input['hostName']) ? $input['hostName'] : $res['host'];
 		$input['user']  = isset($input['userName']) ? $input['userName'] : $res['user'];
