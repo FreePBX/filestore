@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 23:39-0400\n"
+"POT-Creation-Date: 2025-07-14 08:36-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -222,8 +222,12 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: Api/Gql/Filestore.php:192 Api/Gql/Filestore.php:250
+#: Api/Gql/Filestore.php:250
 msgid "Enabled FTP."
+msgstr ""
+
+#: Api/Gql/Filestore.php:192
+msgid "Enabled FTP. Defaults to true if not provided."
 msgstr ""
 
 #: Api/Gql/Filestore.php:204 Api/Gql/Filestore.php:262
@@ -546,7 +550,7 @@ msgstr ""
 msgid "Sorry unable to find the filestore types"
 msgstr ""
 
-#: Api/Gql/Filestore.php:612
+#: Api/Gql/Filestore.php:613
 msgid "Sorry unable to update "
 msgstr ""
 
@@ -727,7 +731,7 @@ msgstr ""
 msgid "You may enter 1 address per line."
 msgstr ""
 
-#: Api/Gql/Filestore.php:610
+#: Api/Gql/Filestore.php:611
 msgid "_"
 msgstr ""
 
