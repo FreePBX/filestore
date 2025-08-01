@@ -12,12 +12,13 @@ class Restore Extends Base\RestoreBase{
                 }
         }
             
-  public function runRestore(){
-    $settings = $this->getConfigs();
-    $clearkvstore = "truncate table kvstore_FreePBX_modules_Filestore";
-    $this->FreePBX->Database->query($clearkvstore);
-    $this->updateEnabledKeys($settings);
-  }
+        public function runRestore(){
+                $settings = $this->getConfigs();
+                $clearkvstore = "truncate table kvstore_FreePBX_modules_Filestore";
+                $this->FreePBX->Database->query($clearkvstore);
+                $this->updateEnabledKeys($settings);
+                $this->importKVStore($settings);
+        }
 	public function processLegacy($pdo, $data, $tables, $unknownTables){
                 $this->log('Restoring only Legacy Backup FTP Servers to Filestore');
                 $this->RestoreLegacyFtpFilestore($pdo);
