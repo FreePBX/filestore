@@ -216,7 +216,8 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 			foreach($this->listItems($driver) as $item){
 				$name = $item['name'] ?? $driver.'-'.substr((string) $item['id'], -5);
 				$description = $item['desc'] ?? '';
-				$locations['locations'][$driver][] = ['id' => $item['id'], 'name' => $name, 'description' => $description];
+				$path = $item['path'] ?? '';
+				$locations['locations'][$driver][] = ['id' => $item['id'], 'name' => $name, 'description' => $description, 'path' => $path];
 			}
 		}
 		return $locations;
@@ -238,6 +239,14 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 					($includeDisabled == false && isset($item['enabled']) && $item['enabled'] == 'yes')))
 			)
 		);
+		if($driver == 'FTP') {
+			foreach ($check_driver as $key => $item) {
+				$bkpfilepath = $this->getConfig('path',$item['id']);
+				if($bkpfilepath) {
+					$check_driver[$key]['path'] = $bkpfilepath;
+				}
+			}
+		}
 		if ($includeDisabled == true) {
 			foreach ($check_driver as $key => $item) {
 				if (!isset($item['enabled']) || trim($item['enabled']) == '') {
@@ -558,7 +567,7 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 
 				// Get files and dirs from driver
 				try {
-					$presult = $this->ls($instance['id']);
+					$presult = $this->ls($instance['id'],$instance['path']);
 				}
 				catch(\Exception) {
 					continue;
