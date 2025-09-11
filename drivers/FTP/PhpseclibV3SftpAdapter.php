@@ -23,16 +23,19 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function fileExists(string $path): bool
     {
+        $path = '/' . ltrim($path, '/');
         return $this->sftp->file_exists($path);
     }
 
     public function directoryExists(string $path): bool
     {
+        $path = '/' . ltrim($path, '/');
         return $this->sftp->is_dir($path);
     }
 
     public function write(string $path, string $contents, Config $config): void
     {
+        $path = '/' . ltrim($path, '/');
         if (!$this->sftp->put($path, $contents)) {
             throw new UnableToWriteFile("Unable to write file at path: $path");
         }
@@ -40,6 +43,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function writeStream(string $path, $resource, Config $config): void
     {
+        $path = '/' . ltrim($path, '/');
         if (!$this->sftp->put($path, stream_get_contents($resource))) {
             throw new UnableToWriteFile("Unable to write stream to path: $path");
         }
@@ -47,6 +51,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function read(string $path): string
     {
+        $path = '/' . ltrim($path, '/');
         $contents = $this->sftp->get($path);
         if ($contents === false) {
             throw new UnableToReadFile("Unable to read file at path: $path");
@@ -56,6 +61,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function readStream(string $path)
     {
+        $path = '/' . ltrim($path, '/');
         $contents = $this->sftp->get($path);
         if ($contents === false) {
             throw new UnableToReadFile("Unable to read file at path: $path");
@@ -68,6 +74,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function delete(string $path): void
     {
+        $path = '/' . ltrim($path, '/');
         if (!$this->sftp->delete($path)) {
             throw new UnableToDeleteFile("Unable to delete file at path: $path");
         }
@@ -75,6 +82,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function deleteDirectory(string $path): void
     {
+        $path = '/' . ltrim($path, '/');
         if (!$this->sftp->rmdir($path)) {
             throw new UnableToDeleteDirectory("Unable to delete directory at path: $path");
         }
@@ -82,6 +90,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function createDirectory(string $path, Config $config): void
     {
+        $path = '/' . ltrim($path, '/');
         if (!$this->sftp->mkdir($path)) {
             throw new UnableToCreateDirectory("Unable to create directory at path: $path");
         }
@@ -89,6 +98,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function move(string $source, string $destination, Config $config): void
     {
+        $path = '/' . ltrim($path, '/');
         if (!$this->sftp->rename($source, $destination)) {
             throw new UnableToMoveFile("Unable to move file from $source to $destination");
         }
@@ -97,12 +107,14 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function copy(string $source, string $destination, Config $config): void
     {
+        $path = '/' . ltrim($path, '/');
         $contents = $this->read($source);
         $this->write($destination, $contents, $config);
     }
 
     public function setVisibility(string $path, string $visibility): void
     {
+        $path = '/' . ltrim($path, '/');
         $permissions = $visibility === 'public' ? 0644 : 0600;
         if (!$this->sftp->chmod($permissions, $path)) {
             throw new UnableToSetVisibility("Unable to set visibility for file at path: $path");
@@ -111,6 +123,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function visibility(string $path): FileAttributes
     {
+        $path = '/' . ltrim($path, '/');
         $stat = $this->sftp->stat($path);
         if ($stat === false) {
             throw new UnableToRetrieveMetadata("Unable to retrieve visibility for file at path: $path");
@@ -124,6 +137,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function mimeType(string $path): FileAttributes
     {
+        $path = '/' . ltrim($path, '/');
         $mimeType = mime_content_type($this->sftp->get($path));
         if ($mimeType === false) {
             throw new UnableToRetrieveMetadata("Unable to retrieve mime type for file at path: $path");
@@ -134,6 +148,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function lastModified(string $path): FileAttributes
     {
+        $path = '/' . ltrim($path, '/');
         $stat = $this->sftp->stat($path);
         if ($stat === false || !isset($stat['mtime'])) {
             throw new UnableToRetrieveMetadata("Unable to retrieve last modified time for file at path: $path");
@@ -144,6 +159,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function fileSize(string $path): FileAttributes
     {
+        $path = '/' . ltrim($path, '/');
         $stat = $this->sftp->stat($path);
         if ($stat === false || !isset($stat['size'])) {
             throw new UnableToRetrieveMetadata("Unable to retrieve file size for file at path: $path");
@@ -154,6 +170,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function listContents(string $path, bool $deep): iterable
     {
+        $path = '/' . ltrim($path, '/');
         $contents = $this->sftp->rawlist($path);
 
         if ($contents === false) {
