@@ -298,6 +298,12 @@ include 'modal.testconnection.php';
 						$('#sshchdir').text("OK");
 					$('#sshwrite').text("Upload of a test-file failed! Please verify the permissions on the server!");
 				}
+				else if(data.message == "Invalid key") {
+					$('#sshconnection').text("Invalid key");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
 				else {
 					$('#sshconnection').text("OK");
 					$('#sshlogin').text("OK");

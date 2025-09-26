@@ -1,6 +1,51 @@
 <?php
+
+/**
+ * Validates and sanitizes a file path to prevent command injection
+ * @param string $path The path to validate
+ * @return string|false Returns sanitized path or false if invalid
+ */
+function validate_and_sanitize_key($path) {
+    if (!is_string($path)) {
+        return false;
+    }
+    $path = trim($path);
+    // Remove any null bytes
+    $path = str_replace("\0", "", $path);
+    // Check for command injection patterns
+    $dangerous_patterns = array(
+        '/[`$()]/',           // Backticks and command substitution
+        '/[;&|]/',            // Command separators
+        '/[<>]/',             // Redirection operators
+        '/\\\s/',             // Backslash space combinations
+        '/\beval\b/i',        // eval command
+        '/\bexec\b/i',        // exec command (in path context)
+        '/\bsh\b/',           // shell commands
+        '/\bbash\b/',         // bash commands
+        '/\\\x[0-9a-fA-F]/',  // Hex encoded characters
+    );
+    foreach ($dangerous_patterns as $pattern) {
+        if (preg_match($pattern, $path)) {
+            return false;
+        }
+    }
+    // Allow only safe characters: alphanumeric, forward slash, underscore, dash, dot
+    if (!preg_match('/^[a-zA-Z0-9\/\._-]+$/', $path)) {
+        return false;
+    }
+    // Prevent directory traversal
+    if (strpos($path, '..') !== false) {
+        return false;
+    }
+    return $path;
+}
+
 function check_ssh_connect($host, $port, $user, $key, $path) {
-	$keypath = dirname($key);
+    $key = validate_and_sanitize_key($key);
+    if(!$key) {
+        return "Invalid key";
+    }
+    $keypath = dirname($key);
 	$publickey = "$key.pub";
 	if(!is_dir($keypath)) {
 		exec("mkdir -p $keypath");
