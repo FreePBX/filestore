@@ -298,6 +298,54 @@ include 'modal.testconnection.php';
 						$('#sshchdir').text("OK");
 					$('#sshwrite').text("Upload of a test-file failed! Please verify the permissions on the server!");
 				}
+				else if(data.message == "Invalid key") {
+					$('#sshconnection').text("Invalid key");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Invalid host") {
+					$('#sshconnection').text("Invalid host");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Invalid user") {
+					$('#sshconnection').text("Invalid user");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Invalid path") {
+					$('#sshconnection').text("Invalid path");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Invalid port") {
+					$('#sshconnection').text("Invalid port");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Failed to create key directory") {
+					$('#sshconnection').text("Failed to create key directory");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Failed to generate SSH key") {
+					$('#sshconnection').text("Failed to generate SSH key");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
+				else if(data.message == "Failed to generate public key") {
+					$('#sshconnection').text("Failed to generate public key");
+					$('#sshlogin').text("Aborted");
+					$('#sshchdir').text("Aborted");
+					$('#sshwrite').text("Aborted");
+				}
 				else {
 					$('#sshconnection').text("OK");
 					$('#sshlogin').text("OK");
