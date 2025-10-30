@@ -41,6 +41,7 @@ class SftpAdapter implements FilesystemAdapter
         ?VisibilityConverter $visibilityConverter = null,
         ?MimeTypeDetector $mimeTypeDetector = null,
         private bool $detectMimeTypeUsingPath = false,
+        private bool $disconnectOnDestruct = false,
     ) {
         $this->prefixer = new PathPrefixer($root);
         $this->visibilityConverter = $visibilityConverter ?? new PortableVisibilityConverter();
@@ -323,9 +324,23 @@ class SftpAdapter implements FilesystemAdapter
             throw UnableToMoveFile::fromLocationTo($source, $destination, $exception);
         }
 
-        if ( ! $connection->rename($sourceLocation, $destinationLocation)) {
-            throw UnableToMoveFile::fromLocationTo($source, $destination);
+        if ($sourceLocation === $destinationLocation) {
+            return;
         }
+
+        if ($connection->rename($sourceLocation, $destinationLocation)) {
+            return;
+        }
+
+        // Overwrite existing file / dir
+        if ($connection->is_file($destinationLocation)) {
+            $this->delete($destination);
+            if ($connection->rename($sourceLocation, $destinationLocation)) {
+                return;
+            }
+        }
+
+        throw UnableToMoveFile::fromLocationTo($source, $destination);
     }
 
     public function copy(string $source, string $destination, Config $config): void
@@ -344,6 +359,13 @@ class SftpAdapter implements FilesystemAdapter
                 @fclose($readStream);
             }
             throw UnableToCopyFile::fromLocationTo($source, $destination, $exception);
+        }
+    }
+
+    public function __destruct()
+    {
+        if ($this->disconnectOnDestruct) {
+            $this->connectionProvider->disconnect();
         }
     }
 }
