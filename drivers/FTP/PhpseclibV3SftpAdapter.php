@@ -6,7 +6,12 @@ use League\Flysystem\Config;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\UnableToRetrieveMetadata;
-use League\Flysystem\UnableToSetMetadata;
+use League\Flysystem\UnableToWriteFile;
+use League\Flysystem\UnableToReadFile;
+use League\Flysystem\UnableToDeleteFile;
+use League\Flysystem\UnableToDeleteDirectory;
+use League\Flysystem\UnableToCreateDirectory;
+use League\Flysystem\UnableToMoveFile;
 use phpseclib3\Net\SFTP;
 use League\Flysystem\StorageAttributes;
 use League\Flysystem\FileAttributes;
@@ -21,21 +26,40 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
         $this->sftp = $sftp;
     }
 
+    /**
+     * Flysystem paths are relative to the storage root. FTP::getSftpHandler() chdir()s
+     * to the configured base path, so paths must stay relative to that directory.
+     * Prefixing "/" incorrectly turns "file.tar.gz" into "/file.tar.gz" (server root).
+     *
+     * If the path already starts with "/", treat it as an absolute server path.
+     */
+    private function normalizeSftpPath(string $path): string
+    {
+        $path = trim($path);
+        if ($path === '' || $path === '.') {
+            return '.';
+        }
+        if ($path[0] === '/') {
+            return $path;
+        }
+        return ltrim($path, '/');
+    }
+
     public function fileExists(string $path): bool
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         return $this->sftp->file_exists($path);
     }
 
     public function directoryExists(string $path): bool
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         return $this->sftp->is_dir($path);
     }
 
     public function write(string $path, string $contents, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         if (!$this->sftp->put($path, $contents)) {
             throw new UnableToWriteFile("Unable to write file at path: $path");
         }
@@ -43,7 +67,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function writeStream(string $path, $resource, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         if (!$this->sftp->put($path, stream_get_contents($resource))) {
             throw new UnableToWriteFile("Unable to write stream to path: $path");
         }
@@ -51,7 +75,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function read(string $path): string
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         $contents = $this->sftp->get($path);
         if ($contents === false) {
             throw new UnableToReadFile("Unable to read file at path: $path");
@@ -61,7 +85,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function readStream(string $path)
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         $contents = $this->sftp->get($path);
         if ($contents === false) {
             throw new UnableToReadFile("Unable to read file at path: $path");
@@ -74,7 +98,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function delete(string $path): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         if (!$this->sftp->delete($path)) {
             throw new UnableToDeleteFile("Unable to delete file at path: $path");
         }
@@ -82,7 +106,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function deleteDirectory(string $path): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         if (!$this->sftp->rmdir($path)) {
             throw new UnableToDeleteDirectory("Unable to delete directory at path: $path");
         }
@@ -90,7 +114,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function createDirectory(string $path, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = $this->normalizeSftpPath($path);
         if (!$this->sftp->mkdir($path)) {
             throw new UnableToCreateDirectory("Unable to create directory at path: $path");
         }
@@ -98,8 +122,9 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function move(string $source, string $destination, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
-        if (!$this->sftp->rename($source, $destination)) {
+        $sourceNorm = $this->normalizeSftpPath($source);
+        $destNorm = $this->normalizeSftpPath($destination);
+        if (!$this->sftp->rename($sourceNorm, $destNorm)) {
             throw new UnableToMoveFile("Unable to move file from $source to $destination");
         }
     }
@@ -107,24 +132,23 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function copy(string $source, string $destination, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
         $contents = $this->read($source);
         $this->write($destination, $contents, $config);
     }
 
     public function setVisibility(string $path, string $visibility): void
     {
-        $path = '/' . ltrim($path, '/');
+        $norm = $this->normalizeSftpPath($path);
         $permissions = $visibility === 'public' ? 0644 : 0600;
-        if (!$this->sftp->chmod($permissions, $path)) {
+        if (!$this->sftp->chmod($permissions, $norm)) {
             throw new UnableToSetVisibility("Unable to set visibility for file at path: $path");
         }
     }
 
     public function visibility(string $path): FileAttributes
     {
-        $path = '/' . ltrim($path, '/');
-        $stat = $this->sftp->stat($path);
+        $norm = $this->normalizeSftpPath($path);
+        $stat = $this->sftp->stat($norm);
         if ($stat === false) {
             throw new UnableToRetrieveMetadata("Unable to retrieve visibility for file at path: $path");
         }
@@ -137,8 +161,8 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function mimeType(string $path): FileAttributes
     {
-        $path = '/' . ltrim($path, '/');
-        $mimeType = mime_content_type($this->sftp->get($path));
+        $norm = $this->normalizeSftpPath($path);
+        $mimeType = mime_content_type($this->sftp->get($norm));
         if ($mimeType === false) {
             throw new UnableToRetrieveMetadata("Unable to retrieve mime type for file at path: $path");
         }
@@ -148,8 +172,8 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function lastModified(string $path): FileAttributes
     {
-        $path = '/' . ltrim($path, '/');
-        $stat = $this->sftp->stat($path);
+        $norm = $this->normalizeSftpPath($path);
+        $stat = $this->sftp->stat($norm);
         if ($stat === false || !isset($stat['mtime'])) {
             throw new UnableToRetrieveMetadata("Unable to retrieve last modified time for file at path: $path");
         }
@@ -159,8 +183,8 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function fileSize(string $path): FileAttributes
     {
-        $path = '/' . ltrim($path, '/');
-        $stat = $this->sftp->stat($path);
+        $norm = $this->normalizeSftpPath($path);
+        $stat = $this->sftp->stat($norm);
         if ($stat === false || !isset($stat['size'])) {
             throw new UnableToRetrieveMetadata("Unable to retrieve file size for file at path: $path");
         }
@@ -170,12 +194,14 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function listContents(string $path, bool $deep): iterable
     {
-        $path = '/' . ltrim($path, '/');
-        $contents = $this->sftp->rawlist($path);
+        $norm = $this->normalizeSftpPath($path);
+        $contents = $this->sftp->rawlist($norm);
 
         if ($contents === false) {
             throw new UnableToRetrieveMetadata("Unable to list contents of directory at path: $path");
         }
+
+        $pathPrefix = ($norm === '.' || $norm === '') ? '' : $norm;
 
         foreach ($contents as $item) {
             // Skip current directory (.) and parent directory (..)
@@ -183,7 +209,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
                 continue;
             }
 
-            $itemPath = rtrim($path, '/') . '/' . $item['filename'];
+            $itemPath = $pathPrefix === '' ? $item['filename'] : $pathPrefix . '/' . $item['filename'];
 
             if ($item['type'] === 2) { // 2 indicates a directory
                 yield DirectoryAttributes::fromArray(['type' => StorageAttributes::TYPE_DIRECTORY, 'path' => $itemPath]);
