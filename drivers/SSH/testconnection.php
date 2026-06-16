@@ -264,6 +264,25 @@ function validate_and_sanitize_path($path) {
     return $path;
 }
 
+/**
+ * Build a remote SSH command for filestore connection tests.
+ * Path must already be validated by validate_and_sanitize_path().
+ * Maps RESTRICT-* prefixes to real cd/rm commands so tests work with or
+ * without freepbx-ssh-restrict.sh on the remote host.
+ */
+function ssh_restrict_command(string $prefix, string $path): string {
+    static $commands = [
+        'RESTRICT-CD-001' => 'cd',
+        'RESTRICT-RM-001' => 'rm',
+    ];
+
+    if (!isset($commands[$prefix])) {
+        return false;
+    }
+
+    return $commands[$prefix] . ' ' . $path;
+}
+
 function check_ssh_connect($host, $port, $user, $key, $path) {
     // Validate all input parameters
     $host = validate_and_sanitize_host($host);
@@ -346,9 +365,7 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
 			return "Login failed";
 		}
 		else {
-			// Use proper escaping for the path in SSH commands
-			$escaped_path = escapeshellarg($path);
-			$stream = ssh2_exec($connection, "cd $escaped_path");
+			$stream = ssh2_exec($connection, ssh_restrict_command('RESTRICT-CD-001', $path));
 			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 			stream_set_blocking($errorStream, true);
 			stream_set_blocking($stream, true);
@@ -371,8 +388,7 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
 					return "Write failed";
 				}
 				else {
-					// Use proper escaping for the rm command
-					$stream = ssh2_exec($connection, "rm $escaped_full_path");
+					$stream = ssh2_exec($connection, ssh_restrict_command('RESTRICT-RM-001', "$path/$filename"));
 					unlink($file);
 					return "OK";
 				}
