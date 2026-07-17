@@ -2,29 +2,12 @@
 	<rawname>filestore</rawname>
 	<name>Filestore</name>
 	<repo>standard</repo>
-	<version>17.0.3</version>
+	<version>18.0.1</version>
 	<publisher>Sangoma Technologies</publisher>
 	<license>AGPLv3</license>
 	<licenselink>http://www.gnu.org/licenses/agpl-3.0.txt</licenselink>
 	<changelog>
-		*17.0.3*    Validate and Sanitize the SSH input parameters 
-		*17.0.2.44* #823 backup module issue in freepbx v17 
-		*17.0.2.43* FREEI-2194    Filestore: After restore, the filestore module is empty 
-		*17.0.2.42* Packaging of ver 17.0.2.42
-		*17.0.2.41* #issue-776  kvstore_FreePBX_modules_Filestore contains a seemingly unused entry 
-		*17.0.2.40* Github filestore issue#44 S3 driver testconnection fails when using custom endpoint	
-		*17.0.2.39* Error in GQL : addFTPInstanceInput - Missing required field 'enabled' of type Boolean 
-		*17.0.2.38* ##687 FreePBX 17 Filestore Addd Test-Button for (s)ftp, Dropbox and SSH Connections 
-		*17.0.2.37* #issues #687  Add Connection testing 
-		*17.0.2.36* Filestore: Add Connection testing 
-		*17.0.2.35* #630 FTP server connectivity issue 
-		*17.0.2.34* #539 filestore ftp instance enabled on restore 
-		*17.0.2.33 FREEI-1467 Fixing undefined method error 
-		*17.0.2.32 Github #546 and Github #539 Fixing backup and restore issues 
-		*17.0.2.29 Adding SFTP option for FTP type of filestore instance 
-		*17.0.2.23 Adding S3 storage class option 
-		*17.0.2.22 bump 
-		*17.0.1alpha1* Initial release
+		*18.0.1* initial release
 	</changelog>
 	<category>Settings</category>
 	<description>Filesystem abstraction for your PBX</description>
@@ -33,6 +16,6 @@
 		<filestore>Filestore</filestore>
 	</menuitems>
 	<supported>
-		<version>17.0</version>
+		<version>18.0</version>
 	</supported>
 </module>
