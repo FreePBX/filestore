@@ -1,10 +1,11 @@
 <?php
 namespace FreePBX\modules\Filestore\drivers;
 
-#[\AllowDynamicProperties]
 abstract class DriverBase{
 	protected $databasekey;
 	protected $config = [];
+	protected $FreePBX = null;
+	protected $db = null;
 	protected static $validKeys = [
 		'enabled' => 'yes',
 	];
