@@ -2,11 +2,12 @@
 	<rawname>filestore</rawname>
 	<name>Filestore</name>
 	<repo>standard</repo>
-	<version>17.0.3</version>
+	<version>17.0.3.1</version>
 	<publisher>Sangoma Technologies</publisher>
 	<license>AGPLv3</license>
 	<licenselink>http://www.gnu.org/licenses/agpl-3.0.txt</licenselink>
 	<changelog>
+		*17.0.3.1* FREEI-3148 -FTP fails 
 		*17.0.3*    Validate and Sanitize the SSH input parameters 
 		*17.0.2.44* #823 backup module issue in freepbx v17 
 		*17.0.2.43* FREEI-2194    Filestore: After restore, the filestore module is empty 
