@@ -35,7 +35,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function write(string $path, string $contents, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = ltrim($path, '/');
         if (!$this->sftp->put($path, $contents)) {
             throw new UnableToWriteFile("Unable to write file at path: $path");
         }
@@ -43,7 +43,7 @@ class PhpseclibV3SftpAdapter implements FilesystemAdapter
 
     public function writeStream(string $path, $resource, Config $config): void
     {
-        $path = '/' . ltrim($path, '/');
+        $path = ltrim($path, '/');
         if (!$this->sftp->put($path, stream_get_contents($resource))) {
             throw new UnableToWriteFile("Unable to write stream to path: $path");
         }
