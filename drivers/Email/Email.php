@@ -65,7 +65,7 @@ class Email extends DriverBase {
 		$ident = $this->FreePBX->Config->get("FREEPBX_SYSTEM_IDENT");
 		$subject = isset($this->mailOptions['subject']) ? trim($this->mailOptions['subject']) :'';
 		$body = isset($this->mailOptions['body']) ? trim($this->mailOptions['body']) :'';
-		$emailType = isset($this->mailOptions['emailType']) ? trim($this->mailOptions['emailType']) :'';
+		$emailType = isset($this->mailOptions['emailType']) ? strtolower(trim($this->mailOptions['emailType'])) :'';
 		if ($body =='') {
 			$body = !empty($this->config['body'])?$this->config['body']:sprintf(_("File from %s, Identifier: %s"),$brand,$ident);
 		}
@@ -76,8 +76,14 @@ class Email extends DriverBase {
 		$mail->subject($subject);
 		$mail->from($from);
 		$mail->to($to);
-		$mail->set_mailtype("html");
-		$mail->message($body);
+		$mailType = ($emailType === 'text') ? 'text' : 'html';
+		$mail->set_mailtype($mailType);
+		if ($mailType === 'html') {
+			$mail->message($body);
+		} else {
+			$mail->set_wordwrap(false);
+			$mail->message(html_entity_decode($body, ENT_QUOTES));
+		}
 		$mail->attach($path);
 		$ret = $mail->send();
 		return $ret;
