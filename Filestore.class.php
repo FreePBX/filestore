@@ -180,7 +180,11 @@ class Filestore extends \FreePBX_Helpers implements \BMO {
 					$result = check_dropbox_connect($_REQUEST['token'], $_REQUEST['path']);
 				}
 				elseif($driver == "SSH") {
-					$result = check_ssh_connect($_REQUEST['host'], $_REQUEST['port'], $_REQUEST['user'], $_REQUEST['key'], $_REQUEST['path']);
+					try {
+						$result = check_ssh_connect($_REQUEST['host'] ?? '', $_REQUEST['port'] ?? '', $_REQUEST['user'] ?? '', $_REQUEST['key'] ?? '', $_REQUEST['path'] ?? '');
+					} catch (\Throwable $e) {
+						$result = "Connect failed";
+					}
 				}
 				elseif($driver == "S3") {
 					$endpoint = !empty($_REQUEST['customendpoint']) ? $_REQUEST['customendpoint'] : 'https://s3.eu-central-1.amazonaws.com';

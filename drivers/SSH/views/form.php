@@ -272,6 +272,8 @@ include 'modal.testconnection.php';
 		$.ajax({
 			url: FreePBX.ajaxurl,
 			data: req,
+			timeout: 30000,
+			global: false,
 			success:function(data){
 				console.log(data);
 				if(data.message == "Connect failed") {
@@ -353,6 +355,18 @@ include 'modal.testconnection.php';
 					$('#sshwrite').text("OK");
 				}
 			},
+			error: function(jqxhr, textStatus) {
+				var msg = "Request failed. Check the server error log for details.";
+				if (textStatus === 'timeout') {
+					msg = "Connection timed out. Please check hostname and port settings!";
+				} else if (jqxhr.responseJSON && jqxhr.responseJSON.error) {
+					msg = typeof jqxhr.responseJSON.error === 'string' ? jqxhr.responseJSON.error : (jqxhr.responseJSON.error.message || msg);
+				}
+				$('#sshconnection').text(msg);
+				$('#sshlogin').text("Aborted");
+				$('#sshchdir').text("Aborted");
+				$('#sshwrite').text("Aborted");
+			}
 		});
 	}
 

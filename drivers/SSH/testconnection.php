@@ -290,6 +290,14 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
     if (!is_numeric($port) || $port < 1 || $port > 65535) {
         return "Invalid port";
     }
+
+    // Expand ~ the same way the SSH driver does
+    if (strpos($key, '~') === 0 && function_exists('posix_getpwuid')) {
+        $home = posix_getpwuid(posix_getuid());
+        if (!empty($home['dir'])) {
+            $key = str_replace('~', $home['dir'], $key);
+        }
+    }
     
     $keypath = dirname($key);
 	$publickey = "$key.pub";
@@ -305,7 +313,6 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
 	if(!file_exists($key)) {
 		// Generate SSH key using PHP's openssl functions or safe exec with proper escaping
 		$escaped_key = escapeshellarg($key);
-		$escaped_keypath = escapeshellarg($keypath);
 		
 		// Create the key using ssh-keygen with proper escaping
 		$cmd = "ssh-keygen -t ecdsa -b 521 -f $escaped_key -N '' 2>/dev/null";
@@ -336,48 +343,58 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
 			return "Failed to generate public key";
 		}
 	}
-	$connection = @ssh2_connect($host, $port);
-	if(!$connection) {
+
+	// Use phpseclib (same stack as the SSH driver). The PECL ssh2 extension
+	// is optional and often missing; calling ssh2_connect() fatals the AJAX
+	// request and leaves the Test Connection modal empty.
+	if (!class_exists(\phpseclib3\Net\SFTP::class) || !class_exists(\phpseclib3\Crypt\PublicKeyLoader::class)) {
 		return "Connect failed";
+	}
+
+	$sftp = null;
+	try {
+		$keydata = @file_get_contents($key);
+		if ($keydata === false || $keydata === '') {
+			return "Invalid key";
 		}
-		else { // Connection to the Server could be established
-		if(!@ssh2_auth_pubkey_file($connection, $user, $publickey, $key)) {
-			@ssh2_disconnect($connection);
-			return "Login failed";
+
+		try {
+			$privateKey = \phpseclib3\Crypt\PublicKeyLoader::load($keydata);
+		} catch (\Throwable $e) {
+			return "Invalid key";
 		}
-		else {
-			// Use proper escaping for the path in SSH commands
-			$escaped_path = escapeshellarg($path);
-			$stream = ssh2_exec($connection, "cd $escaped_path");
-			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-			stream_set_blocking($errorStream, true);
-			stream_set_blocking($stream, true);
-			$error = stream_get_contents($errorStream);
-			if($error != "") {
-				@ssh2_disconnect($connection);
-				return "Chdir failed";
-			}
-			else {
-				$now = time();
-				$file = "/tmp/freepbx_test$now.txt";
-				file_put_contents($file, "FreePBX Filestore Test");
-				$filename = basename($file);
-				$escaped_filename = escapeshellarg($filename);
-				$escaped_full_path = escapeshellarg("$path/$filename");
-				
-				if(!@ssh2_scp_send($connection, "$file", "$path/$filename", 0644)) {
-					@ssh2_disconnect($connection);
-					unlink($file);
-					return "Write failed";
-				}
-				else {
-					// Use proper escaping for the rm command
-					$stream = ssh2_exec($connection, "rm $escaped_full_path");
-					unlink($file);
-					return "OK";
-				}
-			}
+
+		$sftp = new \phpseclib3\Net\SFTP($host, (int) $port, 10);
+		if (!$sftp->login($user, $privateKey)) {
+			$result = $sftp->isConnected() ? "Login failed" : "Connect failed";
+			$sftp->disconnect();
+			return $result;
 		}
+
+		if (!$sftp->chdir($path)) {
+			$sftp->disconnect();
+			return "Chdir failed";
+		}
+
+		$filename = 'freepbx_test' . time() . '.txt';
+		if (!$sftp->put($filename, 'FreePBX Filestore Test')) {
+			$sftp->disconnect();
+			return "Write failed";
+		}
+
+		$sftp->delete($filename, false);
+		$sftp->disconnect();
+		return "OK";
+	} catch (\phpseclib3\Exception\UnableToConnectException $e) {
+		if ($sftp) {
+			$sftp->disconnect();
+		}
+		return "Connect failed";
+	} catch (\Throwable $e) {
+		if ($sftp) {
+			$sftp->disconnect();
+		}
+		return "Connect failed";
 	}
 }
 ?>
