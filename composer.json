@@ -6,7 +6,7 @@
         "league/flysystem": "^3.28.0",
         "symfony/cache": "^7.1",
         "league/flysystem-ftp": "^3.0",
-        "spatie/flysystem-dropbox": "3.0.1"
+        "spatie/flysystem-dropbox": "3.0.2"
     },
     "config": {
         "optimize-autoloader": true
