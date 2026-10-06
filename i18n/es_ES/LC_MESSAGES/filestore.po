@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-11 07:01-0400\n"
+"POT-Creation-Date: 2026-10-06 06:56-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Danger"
 msgstr ""
 
-#: drivers/DriverBase.php:89
+#: drivers/DriverBase.php:90
 msgid "Delete"
 msgstr ""
 
@@ -481,7 +481,7 @@ msgstr ""
 msgid "Remote SSH Port"
 msgstr ""
 
-#: drivers/DriverBase.php:94
+#: drivers/DriverBase.php:95
 msgid "Reset"
 msgstr ""
 
@@ -574,7 +574,7 @@ msgstr ""
 msgid "Storage Class"
 msgstr ""
 
-#: drivers/DriverBase.php:99
+#: drivers/DriverBase.php:100
 msgid "Submit"
 msgstr ""
 
@@ -607,17 +607,17 @@ msgid ""
 "than the max size are not sent."
 msgstr ""
 
-#: Filestore.class.php:384
+#: Filestore.class.php:388
 #, php-format
 msgid "The requested driver %s is disabled"
 msgstr ""
 
-#: Filestore.class.php:380
+#: Filestore.class.php:384
 #, php-format
 msgid "The requested driver %s seems invalid"
 msgstr ""
 
-#: Filestore.class.php:376
+#: Filestore.class.php:380
 msgid "The requested driver seems invalid"
 msgstr ""
 
