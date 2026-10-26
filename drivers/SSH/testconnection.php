@@ -264,6 +264,95 @@ function validate_and_sanitize_path($path) {
     return $path;
 }
 
+/**
+ * Run one remote command and return stdout/stderr.
+ * ssh2_exec does not allocate a PTY, which the restricted key requires.
+ */
+function ssh2_exec_output($connection, $command) {
+    $stream = @ssh2_exec($connection, $command);
+    if (!$stream) {
+        return array('ok' => false, 'stdout' => '', 'stderr' => 'exec failed');
+    }
+    $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+    stream_set_blocking($errorStream, true);
+    stream_set_blocking($stream, true);
+    $stdout = stream_get_contents($stream);
+    $stderr = stream_get_contents($errorStream);
+    fclose($errorStream);
+    fclose($stream);
+    return array(
+        'ok' => true,
+        'stdout' => is_string($stdout) ? $stdout : '',
+        'stderr' => is_string($stderr) ? $stderr : '',
+    );
+}
+
+/**
+ * Path and write check for an asterisk key wrapped by freepbx-ssh-restrict.sh.
+ * Uses only RESTRICT-* commands. Does not open SFTP or run a raw shell.
+ */
+function check_restricted_ssh_path($connection, $path) {
+    $path = rtrim($path, '/');
+    if ($path === '') {
+        @ssh2_disconnect($connection);
+        return "Chdir failed";
+    }
+
+    $listed = ssh2_exec_output($connection, 'RESTRICT-LS-001 ' . $path);
+    if (!$listed['ok']) {
+        @ssh2_disconnect($connection);
+        return "Chdir failed";
+    }
+    // Unrestricted peer has no RESTRICT-* commands. Caller uses the legacy test.
+    if (stripos($listed['stderr'], 'command not found') !== false) {
+        return false;
+    }
+    if ($listed['stderr'] !== '') {
+        @ssh2_disconnect($connection);
+        return "Chdir failed";
+    }
+
+    $probe = $path . '/freepbx_test' . time();
+    $made = ssh2_exec_output($connection, 'RESTRICT-MKDIR-001 ' . $probe);
+    if (!$made['ok'] || $made['stderr'] !== '') {
+        @ssh2_disconnect($connection);
+        return "Write failed";
+    }
+    $removed = ssh2_exec_output($connection, 'RESTRICT-RM-001 ' . $probe);
+    @ssh2_disconnect($connection);
+    if (!$removed['ok'] || $removed['stderr'] !== '') {
+        return "Write failed";
+    }
+    return "OK";
+}
+
+/**
+ * SFTP path and write check. Only for the chrooted freepbx-sftp user.
+ */
+function check_chrooted_sftp_path($connection, $path) {
+    $sftp = @ssh2_sftp($connection);
+    if ($sftp === false) {
+        @ssh2_disconnect($connection);
+        return "Chdir failed";
+    }
+    $path = rtrim($path, '/') ?: '/';
+    if (!@ssh2_sftp_stat($sftp, $path)) {
+        @ssh2_disconnect($connection);
+        return "Chdir failed";
+    }
+    $remote = $path . '/freepbx_test' . time() . '.txt';
+    $stream = @fopen('ssh2.sftp://' . intval($sftp) . $remote, 'w');
+    if (!$stream) {
+        @ssh2_disconnect($connection);
+        return "Write failed";
+    }
+    fwrite($stream, "FreePBX Filestore Test");
+    fclose($stream);
+    @ssh2_sftp_unlink($sftp, $remote);
+    @ssh2_disconnect($connection);
+    return "OK";
+}
+
 function check_ssh_connect($host, $port, $user, $key, $path) {
     // Validate all input parameters
     $host = validate_and_sanitize_host($host);
@@ -346,7 +435,18 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
 			return "Login failed";
 		}
 		else {
-			// Use proper escaping for the path in SSH commands
+			// freepbx-sftp is the only account allowed to use SFTP, and it is chrooted.
+			if ($user === 'freepbx-sftp') {
+				return check_chrooted_sftp_path($connection, $path);
+			}
+
+			// asterisk keys are ForceCommand-wrapped. Test with allow-listed commands only.
+			$restricted = check_restricted_ssh_path($connection, $path);
+			if ($restricted !== false) {
+				return $restricted;
+			}
+
+			// Legacy peer with no command restriction.
 			$escaped_path = escapeshellarg($path);
 			$stream = ssh2_exec($connection, "cd $escaped_path");
 			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
@@ -362,16 +462,14 @@ function check_ssh_connect($host, $port, $user, $key, $path) {
 				$file = "/tmp/freepbx_test$now.txt";
 				file_put_contents($file, "FreePBX Filestore Test");
 				$filename = basename($file);
-				$escaped_filename = escapeshellarg($filename);
 				$escaped_full_path = escapeshellarg("$path/$filename");
-				
+
 				if(!@ssh2_scp_send($connection, "$file", "$path/$filename", 0644)) {
 					@ssh2_disconnect($connection);
 					unlink($file);
 					return "Write failed";
 				}
 				else {
-					// Use proper escaping for the rm command
 					$stream = ssh2_exec($connection, "rm $escaped_full_path");
 					unlink($file);
 					return "OK";
