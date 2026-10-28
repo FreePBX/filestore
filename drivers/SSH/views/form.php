@@ -171,7 +171,7 @@ include 'modal.testconnection.php';
 								<div class="row">
 									<div class="col-md-12">
 										<span id="user-help" class="help-block fpbx-help-block">
-											<?php echo _("SSH Username") ?></span>
+										<?php echo _("Use `freepbx-sftp` as the username only when the SSH server is a FreePBX server used for Warm Spare or Advanced Recovery setups. Otherwise, use the actual username configured on the remote SSH server.") ?>
 									</div>
 								</div>
 							</div>
@@ -225,7 +225,7 @@ include 'modal.testconnection.php';
 								<div class="row">
 									<div class="col-md-12">
 										<span id="path-help" class="help-block fpbx-help-block">
-											<?php echo _("Path on remote server") ?></span>
+										<?php echo _("Use `/backup` when connecting to a FreePBX server with the `freepbx-sftp` user. This user is chrooted, so the path is relative to the chroot environment. Do not enter the full filesystem path.") ?>
 									</div>
 								</div>
 							</div>
