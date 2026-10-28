@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-11 07:01-0400\n"
+"POT-Creation-Date: 2026-10-28 03:13-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -434,7 +434,7 @@ msgid "Path Name"
 msgstr ""
 
 #: Api/Gql/Filestore.php:328 drivers/Dropbox/views/form.php:132
-#: drivers/S3/views/form.php:192 drivers/SSH/views/form.php:228
+#: drivers/S3/views/form.php:192
 msgid "Path on remote server"
 msgstr ""
 
@@ -499,10 +499,6 @@ msgstr ""
 
 #: drivers/SSH/views/form.php:8
 msgid "SSH Server"
-msgstr ""
-
-#: drivers/SSH/views/form.php:174
-msgid "SSH Username"
 msgstr ""
 
 #: drivers/SSH/views/grid.php:20
@@ -691,6 +687,20 @@ msgstr ""
 
 #: drivers/FTP/views/form.php:109
 msgid "Use TLS"
+msgstr ""
+
+#: drivers/SSH/views/form.php:228
+msgid ""
+"Use `/backup` when connecting to a FreePBX server with the `freepbx-sftp` "
+"user. This user is chrooted, so the path is relative to the chroot "
+"environment. Do not enter the full filesystem path."
+msgstr ""
+
+#: drivers/SSH/views/form.php:174
+msgid ""
+"Use `freepbx-sftp` as the username only when the SSH server is a FreePBX "
+"server used for Warm Spare or Advanced Recovery setups. Otherwise, use the "
+"actual username configured on the remote SSH server."
 msgstr ""
 
 #: drivers/FTP/views/form.php:159 drivers/SSH/views/form.php:160
